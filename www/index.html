@@ -292,12 +292,14 @@ $(function() {
       }else{
         if($listview.is(':has(> li.ui-sortable-helper)')){
           // touchend が発火しなかったときの片付け
+          $listview.sortable('cancel').listview();
           $listview.sortable('cancel').listview('refresh');
         }
         $listview.sortable('disable').enableSelection();
       }
     }).trigger('change');
     $listview.on('sortupdate',function(){
+      $listview.listview();
       $listview.listview('refresh');
       $output.val($listview.sortable('toArray',{attribute:'data-value'}).join(''));
     }).trigger('sortupdate');
@@ -307,7 +309,6 @@ $(function() {
     });
   });
 
-//$("ul#infoList1 li").click(function () {
   $(document).on('click', '#infoList1 li:last', function() {
     var index = 0;
 
