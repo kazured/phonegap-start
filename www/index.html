@@ -48,7 +48,7 @@
     </head>
     <body>
         <div class="app">
-            <h1>PhoneGap</h1>
+            <h1>Climbing Memo</h1>
             <div id="deviceready" class="blink">
                 <p class="event listening">Connecting to Device</p>
                 <p class="event received">Device is Ready</p>
@@ -92,17 +92,15 @@ $(document).ready(function() {
     alert(ERROR_MESSAGE);
   }
   */
-
-  //テストデータ設定
-  setTestData();
 });
 
-
-});
 </script>
 <script src="js/facebook.js"></script>
 <script>
 $(function() {
+  //テストデータ設定
+  setTestData();
+
   $html = $('html,body');
   $mask = $('<div class="mask"></div>');
 
@@ -167,15 +165,15 @@ $(function() {
 
       //infoテーブルに登録
       var num = 0;
-      num = insertInfo(date,place,grade,memo,pic);
+      //num = insertInfo(date,place,grade,memo,pic);
 
       //ローディング終了
       stopLoading();
 
       if (num != -1) {
         //infosの先頭に追加
-        var climbInfo = new ClimbInfo(num,date,place,grade,memo,pic);
-        infos.unshift(climbInfo);
+        //var climbInfo = new ClimbInfo(num,date,place,grade,memo,pic);
+        //infos.unshift(climbInfo);
 
         //最新のメモをリスト設定
         setNewInfo(infos);
@@ -203,7 +201,8 @@ $(function() {
 
     //placeテーブル削除
     rtn = false;
-    rtn = deletePlaces();
+    //rtn = deletePlaces();
+    rtn = true;
 
     //placeテーブル、セレクトボックスの設定
     if (rtn) {
@@ -214,12 +213,14 @@ $(function() {
       setPlaceSelectBox('#new_climb_place');
 
       //placesテーブルの再設定
+      /*
       for (var i = 0,i < places.length; i++) {
         rtn = insertPlace(places[i].place);
         if (!rtn) {
           break;
         }
       }
+      */
     }
 
     //ローディング終了
