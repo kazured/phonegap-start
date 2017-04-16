@@ -1,7 +1,7 @@
 /* SVG icons */
 .ui-icon-facebook:after {
-	background-image: url(img/facebook.svg);
+	background-image: url(../img/facebook.svg);
 }
 .ui-icon-twitter:after {
-	background-image: url(img/twitter.svg);
+	background-image: url(../img/twitter.svg);
 }

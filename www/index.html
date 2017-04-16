@@ -61,31 +61,136 @@
         </script>
 
 <script>
+var db = null;
+var rtn;
+
+$(document).ready(function() {
+  //facebook設定
+  $.ajaxSetup({ cache: true });
+  $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
+    FB.init({
+      appId: '1932500730314827', //自分のAPP IDを使用すること
+      version: 'v2.8'
+    });
+    //$('#loginbutton,#feedbutton').removeAttr('disabled');
+    //FB.getLoginStatus(updateStatusCallback);
+  });
+
+  //SQLite設定
+  //初期設定
+  /*
+  rtn = startDB();
+  if (rtn) {
+    //infosテーブルからデータを100件取得
+    rtn = getInfos();
+    if (rtn) {
+      //placesテーブルから場所を取得
+      rtn = getPlaces();
+    }
+  }
+  else {
+    alert(ERROR_MESSAGE);
+  }
+  */
+
+  //テストデータ設定
+  setTestData();
+});
+
+
+});
+</script>
+<script src="js/facebook.js"></script>
+<script>
 $(function() {
   $html = $('html,body');
   $mask = $('<div class="mask"></div>');
 
+  //メモ新規登録画面の画像ファイル読み込み
   $('#new_climb_pic').on("change", function() {
     var file = this.files[0];
-    if(file != null) {
-      console.log(file.name); // ファイル名をログに出力する
+    var name = file.name;
+    if(name.match(/.gif$|.png$|.jpg$|.jpeg$/) == null) {
+      alert("画像ファイルを指定してください");
+      $('#new_climb_img').attr('src', '');
     }
-    //var $_img = $(this).siblings('img'); // 3. jQueryのsiblingsメソッドで兄弟のimgを取得
-    var fileReader = new FileReader();   // 4. ファイルを読み込むFileReaderオブジェクト
+    else {
+      //ファイルを読み込むFileReaderオブジェクト
+      var fileReader = new FileReader();
 
-    // 5. 読み込みが完了した際のイベントハンドラ。imgのsrcにデータをセット
-    fileReader.onload = function(event) {
+      //読み込みが完了した際のイベントハンドラ。imgのsrcにデータをセット
+      fileReader.onload = function(event) {
         // 読み込んだデータをimgに設定
         $('#new_climb_img').attr('src', event.target.result);
-    };
+      };
 
-    // 6. 画像読み込み
-    fileReader.readAsDataURL(file);
+      //画像読み込み
+      fileReader.readAsDataURL(file);
+    }
   });
 
-  //submit
-  $('#climb_new_memo_form').submit(function(event) {
-    alert("メモを新規登録しました");
+  //メモ新規登録画面のカメラ起動
+  $(document).on('click', '#new_climb_camera', function() {
+    navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+      destinationType: Camera.DestinationType.DATA_URL
+    });
+  });
+
+  /**
+   * カメラ撮影が成功した場合に、メモ新規登録画面に画像を反映する
+   */
+  function onSuccess(imageData) {
+    $('#new_climb_img').attr('src', "data:image/jpeg;base64," + imageData);
+  }
+
+  /**
+   * カメラ撮影が失敗した場合に、エラーメッセージを表示する
+   */
+  function onFail(message) {
+    alert(ERROR_MESSAGE);
+  }
+
+  //メモの登録ボタンをクリック
+  $(document).on('click', '#info_create', function() {
+    var date = $("#new_climb_day").val();
+    var place = $("#new_climb_place").val();
+    var grade = $("#new_climb_grade").val();
+    var memo = $("#new_climb_memo").val();
+    var pic = $("#new_climb_pic").val();
+
+    if (date == "" && memo == "") {
+      alert("写真以外は入力してください");
+    }
+    else {
+      //ローディング開始
+      startLoading();
+
+      //infoテーブルに登録
+      var num = 0;
+      num = insertInfo(date,place,grade,memo,pic);
+
+      //ローディング終了
+      stopLoading();
+
+      if (num != -1) {
+        //infosの先頭に追加
+        var climbInfo = new ClimbInfo(num,date,place,grade,memo,pic);
+        infos.unshift(climbInfo);
+
+        //最新のメモをリスト設定
+        setNewInfo(infos);
+
+        //過去のメモをリスト設定
+        setInfoList("#infoList2",infos);
+
+        //ホーム画面に移動
+        $('body').pagecontainer('change', '#home');
+      }
+      else {
+        alert(ERROR_MESSAGE);
+      }
+
+    }
   });
 
   $('#climb_new_place_form').submit(function(event) {
@@ -97,13 +202,54 @@ $(function() {
     startLoading();
 
     //placeテーブル削除
+    rtn = false;
+    rtn = deletePlaces();
+
+    //placeテーブル、セレクトボックスの設定
+    if (rtn) {
+      //配列placesの再設定
+      sortPlaceArray();
+
+      //セレクトボックスの再設定
+      setPlaceSelectBox('#new_climb_place');
+
+      //placesテーブルの再設定
+      for (var i = 0,i < places.length; i++) {
+        rtn = insertPlace(places[i].place);
+        if (!rtn) {
+          break;
+        }
+      }
+    }
+
+    //ローディング終了
+    stopLoading();
+
+    if (!rtn) {
+      alert(ERROR_MESSAGE);
+    }
+  });
+
+  $('#climb_edit_place_form').submit(function(event) {
+    alert("場所を編集しました");
+  });
+
+  $(document).on('click', '#place_delete', function() {
+    //ローディング開始
+    startLoading();
+
+    //placeテーブル削除
 
     //placeテーブル、セレクトボックスの設定
     //配列placesの再設定
-    sortPlaceArray();
+    var index;
+    deletePlaceFromArray();
 
-    //セレクトボックスの再設定
-    setPlaceSelectBox('#new_climb_place');
+    //
+    setPlaceList();
+
+    //ラジオボタンの再設定
+    setPlaceRadio();
 
     //placesテーブルの再設定
 
@@ -111,19 +257,22 @@ $(function() {
     stopLoading();
   });
 
-  $('#climb_edit_place_form').submit(function(event) {
-    alert("場所を編集しました");
-  });
-
-  $('#climb_delete_place_form').submit(function(event) {
-    alert("場所を削除しました");
-  });
-
   //カレンダーで探す
-  $('#old_climb_day').on("change", function() {
-	//alert("カレンダーで探す");
-	var day_text = $('#old_climb_day').val();
-    alert(day_text);//それぞれの要素に.html()する（alertは実際の処理が不明なため）
+  $(document).on('click', '#climb_calendar_search', function() {
+    var day_text = $('#old_climb_day2').val();
+    if (day_text == "") {
+      alert("日付を入力してください")
+    }
+    else {
+      //ローディング開始
+      startLoading();
+
+      //infoテーブルを探す
+
+      //ローディング終了
+      stopLoading();
+    }
+
   });
 
   //場所を並び替える
@@ -153,24 +302,56 @@ $(function() {
     }).trigger('sortupdate');
     $listview.on('vclick','a',function(){
       var $li = $(this).parents('li');
-      alert('This is "'+$li.text()+'"\ndata-value: '+$li.attr('data-value'));
+      //alert('This is "'+$li.text()+'"\ndata-value: '+$li.attr('data-value'));
     });
   });
 
-  //$("ul#infoList1 li").click(function () {
-  $(document).on('click', '#infoList1 li', function() {
-    //どのliが押されたか
-    var index = $("#infoList1 li").index(this);
+//$("ul#infoList1 li").click(function () {
+  $(document).on('click', '#infoList1 li:last', function() {
+    var index = 0;
+
+    //infos[]のindexを保存
+    $('#climb_old_memo').data('index',index);
 
     //画面に情報を設定
     //登った日
-    $("#old_climb_day").attr('value',infos[index].date);
+    $("#old_climb_day").text(infos[index].date);
 
     //登った場所
-    $("#old_climb_place").attr('value',infos[index].place);
+    $("#old_climb_place").text(infos[index].place);
 
     //グレード
-    $("#old_climb_grade").attr('value',infos[index].grade);
+    $("#old_climb_grade").text(infos[index].grade);
+
+    //メモ
+    $("#old_climb_memo").text(infos[index].memo);
+
+    //写真
+    $("#old_climb_img").attr('src',infos[index].pic);
+
+    //戻るリンク
+    $("#old_climb_return").attr('href','#home');
+
+    $('body').pagecontainer('change', '#climb_old_memo');
+  });
+
+  //$("ul#infoList1 li").click(function () {
+  $(document).on('click', '#infoList2 li', function() {
+    //どのliが押されたか
+    var index = $("#infoList2 li").index(this);
+
+    //infos[]のindexを保存
+    $('#climb_old_memo').data('index',index);
+
+    //画面に情報を設定
+    //登った日
+    $("#old_climb_day").text(infos[index].date);
+
+    //登った場所
+    $("#old_climb_place").text(infos[index].place);
+
+    //グレード
+    $("#old_climb_grade").text(infos[index].grade);
 
     //メモ
     $("#old_climb_memo").text(infos[index].memo);
@@ -182,7 +363,14 @@ $(function() {
     $("#old_climb_return").attr('href','#climb_list');
 
     $('body').pagecontainer('change', '#climb_old_memo');
-  })
+  });
+
+  $(document).on('click', '#old_delete', function() {
+    //infos[]のindexを取得
+    var index = $('#climb_old_memo').data('index');
+    alert("index:" + index);
+  });
+
 
   //登った場所のセレクトボックス設定
   setPlaceSelectBox('#new_climb_place');
@@ -190,8 +378,46 @@ $(function() {
   //登った場所のリスト設定
   setPlaceList();
 
+  //登った場所のラジオボタン設定
+  setPlaceRadio();
+
+  //最新のメモをリスト設定
+  setNewInfo(infos);
+
   //過去のメモをリスト設定
-  setInfoList("#infoList1",infos);
+  setInfoList("#infoList2",infos);
+
+
+});
+
+//$('#shareFB').click(function () {
+$(document).on('click', '#shareFB', function() {
+    var index = $('#climb_old_memo').data('index');
+    var data = infos[index].pic;
+    var filename = "Climbing Memo";
+    var message = infos[index].memo;
+    var name = infos[index].date + "@" + infos[index].place;
+    var description = "グレード : " + infos[index].grade;
+
+    try {
+        blob = dataURItoBlob(data);
+    } catch (e) {
+        console.log(e);
+    }
+    FB.getLoginStatus(function (response) {
+        console.log(response);
+        if (response.status === "connected") {
+            postImageToFacebook(response.authResponse.accessToken, filename, "image/png", blob, message,name,description);
+        } else if (response.status === "not_authorized") {
+            FB.login(function (response) {
+                postImageToFacebook(response.authResponse.accessToken, filename, "image/png", blob, window.location.href);
+            }, {scope: "publish_actions"});
+        } else {
+            FB.login(function (response) {
+                postImageToFacebook(response.authResponse.accessToken, filename, "image/png", blob,  window.location.href);
+            }, {scope: "publish_actions"});
+        }
+    });
 });
 </script>
 
@@ -202,13 +428,14 @@ $(function() {
       <li data-role="list-divider">設定</li>
       <li><a href="#climb_new_place" data-theme="b" class="ui-btn ui-icon-edit ui-btn-icon-left">場所を新規登録</a></li>
       <li><a href="#climb_edit_places" data-theme="b" class="ui-btn ui-icon-edit ui-btn-icon-left">場所を並び替え</a></li>
-      <li><a href="#climb_edit_place" data-theme="b" class="ui-btn ui-icon-edit ui-btn-icon-left">場所の名前変更</a></li>
-      <li><a href="#climb_delete_place" data-theme="b" class="ui-btn ui-icon-edit ui-btn-icon-left">場所の削除</a></li>
+      <li><a href="#climb_delete_place" data-theme="b" class="ui-btn ui-icon-edit ui-btn-icon-left">場所を削除</a></li>
     </ul>
   </div>
-  <div data-role="header" data-fullscreen="true" data-theme="a">
-    <a href="#menu-right" class="ui-btn ui-btn-right ui-icon-gear ui-btn-icon-left ui-corner-all">設定</a>
+  <div data-role="header" data-theme="a">
     <h1>Climbing Memo</h1>
+    <div data-role="navbar">
+    <a href="#menu-right" class="ui-btn ui-btn-right ui-icon-gear ui-btn-icon-left ui-corner-all">設定</a>
+    </div>
   </div>
   <div role="main" class="ui-content">
 
@@ -223,26 +450,21 @@ $(function() {
       <li><a href="#climb_calendar" data-theme="a" class="ui-btn ui-icon-calendar ui-btn-icon-left">メモをカレンダーで探す</a></li>
     </ul>
 
+    <ul data-role="listview" data-inset="true"  id="infoList1" data-theme="a">
+      <li data-role="list-divider">最近のメモ</li>
+      <li><img src="img/new.svg"><h2></h2><p></p></li>
+    </ul>
+
   </div>
 
-  <div data-role="footer" data-position="fixed" data-fullscreen="true" data-theme="a" class="ui-bar">
-    <div data-role="navbar" data-iconpos="top">
-      <ul>
-        <li><a href="index.html" class="ui-btn ui-btn-active ui-icon-home ui-btn-icon-left">ホーム</a></li>
-        <li><a href="config.html" class="ui-btn ui-icon-gear ui-btn-icon-left">設定</a></li>
-      </ul>
-    </div>
-  </div>
 </div>
 
 <!-- メモを新規登録 -->
 <div data-role="page" id="climb_new_memo">
-  <div data-role="header" data-fullscreen="true" data-theme="a" data-add-back-btn="true" data-back-btn-text="戻る">
+  <div data-role="header" data-theme="a" data-add-back-btn="true" data-back-btn-text="戻る">
     <a href="#home" class="ui-btn ui-btn-active ui-icon-home ui-btn-icon-left ui-corner-all">ホーム</a>
     <h1>メモを新規登録</h1>
   </div>
-
-  <form method="POST" id="climb_new_memo_form">
 
   <label for="new_climb_day">登った日</label>
   <input type="text" id="new_climb_day" data-role="datebox" data-options='{"mode":"calbox", "overrideDateFormat": "%Y/%m/%d"}'>
@@ -275,48 +497,51 @@ $(function() {
   <textarea id="new_climb_memo" name="entry_memo" data-autogrow="false"></textarea>
 
   <label for="newclimbday">写真</label>
-  <input type="file" id="new_climb_pic"><br>
+  <input type="file" id="new_climb_pic">
+  <button class="ui-btn ui-btn-icon-left ui-icon-camera" id="new_climb_camera">カメラで撮る</button><br>
   <img id="new_climb_img" src="" alt="" width="100%">
 
-  <div data-role="footer" data-position="fixed" data-fullscreen="true" data-theme="a" class="ui-bar">
+  <div data-role="footer" data-position="fixed" data-theme="a">
     <div data-role="navbar" data-iconpos="top">
       <ul>
-        <li><input type="submit" value="登録" class="ui-btn" data-icon="edit"></li>
-        <li><input type="reset" value="リセット" class="ui-btn" data-icon="back"></li>
+        <li><a href="#info_create_popup" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-edit ui-btn-icon-left">登録</a></li>
       </ul>
     </div>
   </div>
 
-  </form>
-
+  <div data-role="popup" id="info_create_popup" data-overlay-theme="a" data-dismissible="false" data-history="false">
+    <div data-role="header" data-theme="a">
+      <h1>メモを登録</h1>
+    </div>
+    <div role="main" class="ui-content">
+      <p>メモを登録しますがよろしいですか？</p>
+      <div data-role="navbar" data-iconpos="top">
+        <ul>
+          <li><a href="#" id="info_create" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">はい</a></li>
+          <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">キャンセル</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- メモをリスト表示 -->
 <div data-role="page" id="climb_list">
-  <div data-role="header" data-fullscreen="true" data-theme="a" data-add-back-btn="true" data-back-btn-text="戻る">
+  <div data-role="header" data-theme="a" data-add-back-btn="true" data-back-btn-text="戻る">
     <a href="#home" class="ui-btn ui-btn-active ui-icon-home ui-btn-icon-left ui-corner-all">ホーム</a>
     <h1>メモをリスト表示</h1>
   </div>
 
   <div role="main" class="ui-content">
-    <ul data-role="listview" id="infoList1">
+    <ul data-role="listview" id="infoList2">
     </ul>
-  </div>
-
-  <div data-role="footer" data-position="fixed" data-fullscreen="true" data-theme="a" class="ui-bar">
-    <div data-role="navbar" data-iconpos="top">
-      <ul>
-        <li><input type="submit" value="登録" data-icon="arrow-r"></li>
-        <li><input type="reset" value="リセット" data-icon="back"></li>
-      </ul>
-    </div>
   </div>
 
 </div>
 
 <!-- メモをカレンダーで探す -->
 <div data-role="page" id="climb_calendar">
-  <div data-role="header" data-fullscreen="true" data-theme="a" data-add-back-btn="true" data-back-btn-text="戻る">
+  <div data-role="header" data-theme="a" data-add-back-btn="true" data-back-btn-text="戻る">
     <a href="#home" class="ui-btn ui-btn-active ui-icon-home ui-btn-icon-left ui-corner-all">ホーム</a>
     <h1>メモをカレンダーで探す</h1>
   </div>
@@ -336,11 +561,10 @@ $(function() {
     </ul>
   </div>
 
-  <div data-role="footer" data-position="fixed" data-fullscreen="true" data-theme="a" class="ui-bar">
+  <div data-role="footer" data-position="fixed" data-theme="a">
     <div data-role="navbar" data-iconpos="top">
       <ul>
-        <li><input type="submit" value="登録" data-icon="arrow-r"></li>
-        <li><input type="reset" value="リセット" data-icon="back"></li>
+        <li><button class="ui-btn ui-btn-icon-left ui-icon-search" id="climb_calendar_search">検索</button></li>
       </ul>
     </div>
   </div>
@@ -349,7 +573,7 @@ $(function() {
 
 <!-- 場所を新規登録 -->
 <div data-role="page" id="climb_new_place">
-  <div data-role="header" data-fullscreen="true" data-theme="b" data-add-back-btn="true" data-back-btn-text="戻る">
+  <div data-role="header" data-theme="b" data-add-back-btn="true" data-back-btn-text="戻る">
     <a href="#home" class="ui-btn ui-btn-active ui-icon-home ui-btn-icon-left ui-corner-all">ホーム</a>
     <h1>場所を新規登録</h1>
   </div>
@@ -359,7 +583,7 @@ $(function() {
   <label for="new_climb_place_name">場所の名前</label>
   <input type="text" id="new_climb_place_name">
 
-  <div data-role="footer" data-position="fixed" data-fullscreen="true" data-theme="b" class="ui-bar">
+  <div data-role="footer" data-position="fixed" data-theme="b">
     <div data-role="navbar" data-iconpos="top">
       <ul>
         <li><input type="submit" value="登録" data-icon="edit"></li>
@@ -374,7 +598,7 @@ $(function() {
 
 <!-- 場所を並び替え -->
 <div data-role="page" id="climb_edit_places">
-  <div data-role="header" data-fullscreen="true" data-theme="b" data-add-back-btn="true" data-back-btn-text="戻る">
+  <div data-role="header" data-theme="b" data-add-back-btn="true" data-back-btn-text="戻る">
     <a href="#home" class="ui-btn ui-btn-active ui-icon-home ui-btn-icon-left ui-corner-all">ホーム</a>
     <h1>場所を並び替え</h1>
   </div>
@@ -382,7 +606,7 @@ $(function() {
   <ul id="listview" data-role="listview" data-inset="true" data-theme="b">
   </ul>
 
-  <div data-role="footer" data-position="fixed" data-fullscreen="true" data-theme="b" class="ui-bar">
+  <div data-role="footer" data-position="fixed" data-theme="b">
     <div data-role="navbar" data-iconpos="top">
       <ul>
         <li><button class="ui-btn ui-btn-icon-left ui-icon-edit" id="place_sort">登録</button></li>
@@ -392,33 +616,54 @@ $(function() {
 
 </div>
 
+<!-- 場所を削除 -->
+<div data-role="page" id="climb_delete_place">
+  <div data-role="header" data-theme="b" data-add-back-btn="true" data-back-btn-text="戻る">
+    <a href="#home" class="ui-btn ui-btn-active ui-icon-home ui-btn-icon-left ui-corner-all">ホーム</a>
+    <h1>場所を削除</h1>
+  </div>
+
+  <ul id="listview" data-role="listview" data-inset="true" data-theme="b">
+  </ul>
+
+  <div class="ui-field-contain" data-theme="b" id="placeDeleteRadio">
+  </div>
+
+  <div data-role="footer" data-position="fixed" data-theme="b">
+    <div data-role="navbar" data-iconpos="top">
+      <ul>
+        <li><button class="ui-btn ui-btn-icon-left ui-icon-delete" id="place_delete">削除</button></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
 <!-- 登録済みのメモ -->
 <div data-role="page" id="climb_old_memo">
-  <div data-role="header" data-fullscreen="true" data-theme="a" data-add-back-btn="true" data-back-btn-text="戻る">
+  <div data-role="header" data-theme="a" data-add-back-btn="true" data-back-btn-text="戻る">
     <a href="#" class="ui-btn ui-btn-active ui-icon-home ui-btn-icon-left ui-corner-all" id="old_climb_return">戻る</a>
     <h1>登録済みのメモ</h1>
   </div>
 
-  <label for="old_climb_day">登った日</label>
-  <input type="text" id="old_climb_day" disabled="disabled">
-
-  <label for="old_climb_place">登った場所</label>
-  <input type="text" id="old_climb_place" disabled="disabled">
-
-  <label for="old_climb_grade">グレード</label>
-  <input type="text" id="old_climb_grade" disabled="disabled">
-
-  <label for="old_climb_memo">メモ</label>
-  <div id="old_climb_memo"></div>
   <p></p>
-  <label for="old_climb_img">写真</label>
+  <ul data-role="listview" data-inset="true" data-theme="a">
+    <li data-role="list-divider">登った日</li>
+    <li id="old_climb_day"></li>
+    <li data-role="list-divider">登った場所</li>
+    <li id="old_climb_place"></li>
+    <li data-role="list-divider">グレード</li>
+    <li id="old_climb_grade"></li>
+    <li data-role="list-divider">メモ</li>
+    <li id="old_climb_memo"></li>
+  </ul>
+  <p></p>
   <img id="old_climb_img" src="" alt="" width="100%">
 
-  <div data-role="footer" data-position="fixed" data-fullscreen="true" data-theme="a" class="ui-bar">
+  <div data-role="footer" data-position="fixed" data-theme="a">
     <div data-role="navbar" data-iconpos="top">
       <ul>
-        <li><a href="#" class="ui-btn ui-icon-facebook ui-btn-icon-left ui-btn-inline">facebook</a></li>
-        <li><a href="#" class="ui-btn ui-icon-twitter ui-btn-icon-left ui-btn-inline">twitter</a></li>
+        <li><a href="#" class="ui-btn ui-icon-facebook ui-btn-icon-left ui-btn-inline" id="shareFB">facebook</a></li>
         <li><button class="ui-btn ui-btn-icon-left ui-icon-edit" id="old_delete">削除</button></li>
       </ul>
     </div>
@@ -426,6 +671,5 @@ $(function() {
 
 </div>
 
-
-    </body>
+</body>
 </html>
