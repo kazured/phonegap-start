@@ -85,9 +85,11 @@ var startDB = function() {
           //placesテーブル作成成功
         }, function(error) {
           rtn = false
+          alert("create places ng");
         }
       }, function(error) {
         rtn = false;
+        alert("create infos ng");
       }
     }, function(error) {
       //console.log('Transaction ERROR: ' + error.message);
@@ -101,13 +103,15 @@ var startDB = function() {
     if (rtn) {
       tx.executeSql(INSERT_PLACES),[INSERT_PLACE1],function(res) {
         //placesテーブル 1件目データ挿入成功
-        alert("1件目:" + res.insertId);
+        //alert("1件目:" + res.insertNum);
+        /*
         tx.executeSql(INSERT_PLACES),[INSERT_PLACE2],function(res) {
           //placesテーブル 2件目データ挿入成功
-          alert("2件目:" + res.insertId);
+          alert("2件目:" + res.insertNum);
         }, function(error) {
           rtn = false
         }
+        */
       }, function(error) {
         rtn = false
       }
