@@ -82,14 +82,19 @@ document.addEventListener('deviceready',function() {
   rtn = startDB();
   if (rtn) {
     //infosテーブルからデータを100件取得
+    alert("test2");
     rtn = getInfos();
+    alert("test3");
     if (rtn) {
       //placesテーブルから場所を取得
+    alert("test4");
       rtn = getPlaces();
+      alert("test5");
     }
   }
   else {
     alert(ERROR_MESSAGE);
+    alert("1");
   }
 });
 
