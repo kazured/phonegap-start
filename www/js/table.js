@@ -53,14 +53,14 @@ var CREATE_INFOS = "create table if not exists infos(num integer primary key aut
 var CREATE_PLACES = "create table if not exists places(num integer primary key, place text)";
 
 //DML
-var SELECT_INFOS_GET_NEW_100 = "select * from infos order by id asc limit 100";
-var SELECT_INFOS_WHERE_DATE = "select * from infos order by id asc where date = ?";
-var SELECT_PLACES = "select * from places order by id asc";
+var SELECT_INFOS_GET_NEW_100 = "select * from infos order by num asc limit 100";
+var SELECT_INFOS_WHERE_DATE = "select * from infos order by num asc where date = ?";
+var SELECT_PLACES = "select * from places order by num asc";
 
 var INSERT_INFOS = "insert into infos (date,place,grade,memo,pic) values (?,?,?,?,?)";
 var INSERT_PLACES = "insert into places (place) values (?)";
 
-var DELETE_INFOS_WHERE_ID = "delete from infos where id = ?";
+var DELETE_INFOS_WHERE_NUM = "delete from infos where num = ?";
 var DELETE_PLACES = "delete from places";
 
 /**
@@ -266,26 +266,25 @@ var insertInfo = function(date,place,grade,memo,pic) {
 
 /**
  * placesテーブルに場所を登録する
- * @return {boolean} 処理が成功したらtrue、失敗したらfalseを返す
+ * @return {INTEGER} 処理が成功したら追加されたレコードの番号(num?)、失敗したら-1を返す
  */
-var insertPlace = function(climbPlace) {
-  var rtn;
+var insertPlace = function(place) {
+  var num;
   db.transaction(function (tx) {
-    tx.executeSql(INSERT_PLACES, [climbPlace.place], function(tx, res) {
+    tx.executeSql(INSERT_PLACES, [place], function(tx, res) {
       //console.log("INSERT success");
-      rtn = true;
+      num = res.insertId;
     },
     function(tx, error) {
       //console.log('INSERT error: ' + error.message);
-      rtn = false;
+      num = -1;
     });
   }, function(error) {
     //console.log('transaction error: ' + error.message);
-    rtn = false;
+    num = -1;
   }, function() {
     //console.log('transaction ok');
-    rtn = true;
   });
 
-  return rtn;
+  return num;
 };

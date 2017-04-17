@@ -48,7 +48,7 @@
     </head>
     <body>
         <div class="app">
-            <h1>Climbing Memo</h1>
+            <h1>Climb Memo</h1>
             <div id="deviceready" class="blink">
                 <p class="event listening">Connecting to Device</p>
                 <p class="event received">Device is Ready</p>
@@ -78,7 +78,6 @@ $(document).ready(function() {
 
   //SQLite設定
   //初期設定
-  /*
   rtn = startDB();
   if (rtn) {
     //infosテーブルからデータを100件取得
@@ -91,7 +90,6 @@ $(document).ready(function() {
   else {
     alert(ERROR_MESSAGE);
   }
-  */
 });
 
 </script>
@@ -99,7 +97,7 @@ $(document).ready(function() {
 <script>
 $(function() {
   //テストデータ設定
-  setTestData();
+  //setTestData();
 
   $html = $('html,body');
   $mask = $('<div class="mask"></div>');
@@ -163,17 +161,17 @@ $(function() {
       //ローディング開始
       startLoading();
 
-      //infoテーブルに登録
+      //infosテーブルに登録
       var num = 0;
-      //num = insertInfo(date,place,grade,memo,pic);
+      num = insertInfo(date,place,grade,memo,pic);
 
       //ローディング終了
       stopLoading();
 
       if (num != -1) {
         //infosの先頭に追加
-        //var climbInfo = new ClimbInfo(num,date,place,grade,memo,pic);
-        //infos.unshift(climbInfo);
+        var climbInfo = new ClimbInfo(num,date,place,grade,memo,pic);
+        infos.unshift(climbInfo);
 
         //最新のメモをリスト設定
         setNewInfo(infos);
@@ -191,71 +189,123 @@ $(function() {
     }
   });
 
-  $('#climb_new_place_form').submit(function(event) {
-    alert("場所を新規登録しました");
+  //場所の登録ボタンをクリック
+  $(document).on('click', '#place_create', function() {
+    var place = $("#new_climb_place_name").val();
+
+    if (place != "") {
+      //ローディング開始
+      startLoading();
+
+      //placesテーブルに登録
+      var num = 0;
+      num = insertPlace(place);
+
+      //ローディング終了
+      stopLoading();
+
+      if (num != -1) {
+        //placesの末尾に追加
+        var climbPlace = new ClimbPlace(num,place);
+        places.push(climbPlace);
+
+        //登った場所のセレクトボックス設定
+        setPlaceSelectBox('#new_climb_place');
+
+        //登った場所のリスト設定
+        setPlaceList();
+
+        //登った場所のラジオボタン設定
+        setPlaceRadio();
+
+        //ホーム画面に移動
+        $('body').pagecontainer('change', '#home');
+      }
+      else {
+        alert(ERROR_MESSAGE);
+      }
+
+    }
   });
 
+  //場所の並び替え
   $(document).on('click', '#place_sort', function() {
-    //ローディング開始
-    startLoading();
+    if (places != null && places.length > 1) {
+      //ローディング開始
+      startLoading();
 
-    //placeテーブル削除
-    rtn = false;
-    //rtn = deletePlaces();
-    rtn = true;
+      //placeテーブル削除
+      rtn = false;
+      rtn = deletePlaces();
 
-    //placeテーブル、セレクトボックスの設定
-    if (rtn) {
-      //配列placesの再設定
-      sortPlaceArray();
+      //placeテーブル、セレクトボックスの設定
+      if (rtn) {
+        //配列placesの再設定
+        sortPlaceArray();
 
-      //セレクトボックスの再設定
-      setPlaceSelectBox('#new_climb_place');
+        //セレクトボックスの再設定
+        setPlaceSelectBox('#new_climb_place');
 
-      //placesテーブルの再設定
-      /*
-      for (var i = 0,i < places.length; i++) {
-        rtn = insertPlace(places[i].place);
-        if (!rtn) {
-          break;
+        //placesテーブルの再設定
+        for (var i = 0,i < places.length; i++) {
+          rtn = insertPlace(places[i].place);
+          if (!rtn) {
+            break;
+          }
         }
       }
-      */
-    }
 
-    //ローディング終了
-    stopLoading();
+      //ローディング終了
+      stopLoading();
 
-    if (!rtn) {
-      alert(ERROR_MESSAGE);
+      if (!rtn) {
+        alert(ERROR_MESSAGE);
+      }
     }
   });
 
-  $('#climb_edit_place_form').submit(function(event) {
-    alert("場所を編集しました");
-  });
-
+  //場所の削除をクリック
   $(document).on('click', '#place_delete', function() {
-    //ローディング開始
-    startLoading();
+    if (places != null && places.length > 1) {
+      //ローディング開始
+      startLoading();
 
-    //placeテーブル削除
+      //placesテーブル削除
+      rtn = false;
+      rtn = deletePlaces();
 
-    //placeテーブル、セレクトボックスの設定
-    //配列placesの再設定
-    var index;
-    deletePlaceFromArray();
+      if (rtn) {
+        //placesから削除
+        deletePlaceFromArray();
 
-    //
-    setPlaceList();
+        //登った場所のセレクトボックス設定
+        setPlaceSelectBox('#new_climb_place');
 
-    //ラジオボタンの再設定
-    setPlaceRadio();
+        //登った場所のリスト設定
+        setPlaceList();
 
-    //placesテーブルの再設定
+        //登った場所のラジオボタン設定
+        setPlaceRadio();
 
-    //ローディング終了
-    stopLoading();
+        //placesテーブルの再設定
+        for (var i = 0,i < places.length; i++) {
+          rtn = insertPlace(places[i].place);
+          if (!rtn) {
+            break;
+          }
+        }
+      }
+
+      //ローディング終了
+      stopLoading();
+
+      if (!rtn) {
+        alert(ERROR_MESSAGE);
+      }
+    }
+    else {
+      alert("場所が２件以上なければ削除できません");
+    }
   });
 
   //カレンダーで探す
@@ -268,12 +318,23 @@ $(function() {
       //ローディング開始
       startLoading();
 
-      //infoテーブルを探す
+      rtn = false;
+      //infosテーブルを探す
+      rtn = getInfosOnDate(day_text);
+      if (rtn) {
+        //リストに設定
+        if (infosOnDate != null && infosOnDate.length > 0) {
+          setInfoList('#infoList3',infosOnDate);
+        }
+      }
 
       //ローディング終了
       stopLoading();
-    }
 
+      if (!rtn) {
+        alert(ERROR_MESSAGE);
+      }
+    }
   });
 
   //場所を並び替える
@@ -434,7 +495,7 @@ $(document).on('click', '#shareFB', function() {
     </ul>
   </div>
   <div data-role="header" data-theme="a">
-    <h1>Climbing Memo</h1>
+    <h1>Climb Memo</h1>
     <div data-role="navbar">
     <a href="#menu-right" class="ui-btn ui-btn-right ui-icon-gear ui-btn-icon-left ui-corner-all">設定</a>
     </div>
@@ -552,16 +613,10 @@ $(document).on('click', '#shareFB', function() {
   <input type="text" id="old_climb_day2" data-role="datebox" data-options='{"mode":"calbox", "overrideDateFormat": "%Y/%m/%d"}'>
 
   <div role="main" class="ui-content">
-    <ul data-role="listview" id="infoList2">
-      <li>
-        <h2>2017/04/09</h2>
-        <p></p>
-      </li>
-      <li><a href="#">返信<span class="ui-li-count">12</span></a></li>
-      <li><a href="#">ダイレクトメッセージ<span class="ui-li-count">3</span></a></li>
-      <li><a href="#">#hamster<span class="ui-li-count">64</span></a></li>
+    <ul data-role="listview" id="infoList3">
     </ul>
   </div>
+
 
   <div data-role="footer" data-position="fixed" data-theme="a">
     <div data-role="navbar" data-iconpos="top">
@@ -580,21 +635,31 @@ $(document).on('click', '#shareFB', function() {
     <h1>場所を新規登録</h1>
   </div>
 
-  <form method="POST" id="climb_new_place_form">
-
   <label for="new_climb_place_name">場所の名前</label>
   <input type="text" id="new_climb_place_name">
 
-  <div data-role="footer" data-position="fixed" data-theme="b">
+  <div data-role="footer" data-position="fixed" data-theme="a">
     <div data-role="navbar" data-iconpos="top">
       <ul>
-        <li><input type="submit" value="登録" data-icon="edit"></li>
-        <li><input type="reset" value="リセット" data-icon="back"></li>
+        <li><a href="#place_create_popup" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-edit ui-btn-icon-left">登録</a></li>
       </ul>
     </div>
   </div>
 
-  </form>
+  <div data-role="popup" id="place_create_popup" data-overlay-theme="a" data-dismissible="false" data-history="false">
+    <div data-role="header" data-theme="a">
+      <h1>場所を登録</h1>
+    </div>
+    <div role="main" class="ui-content">
+      <p>場所を登録しますがよろしいですか？</p>
+      <div data-role="navbar" data-iconpos="top">
+        <ul>
+          <li><a href="#" id="place_create" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">はい</a></li>
+          <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">キャンセル</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -631,11 +696,26 @@ $(document).on('click', '#shareFB', function() {
   <div class="ui-field-contain" data-theme="b" id="placeDeleteRadio">
   </div>
 
-  <div data-role="footer" data-position="fixed" data-theme="b">
+  <div data-role="footer" data-position="fixed" data-theme="a">
     <div data-role="navbar" data-iconpos="top">
       <ul>
-        <li><button class="ui-btn ui-btn-icon-left ui-icon-delete" id="place_delete">削除</button></li>
+        <li><a href="#place_delete_popup" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-delete ui-btn-icon-left">削除</a></li>
       </ul>
+    </div>
+  </div>
+
+  <div data-role="popup" id="place_create_popup" data-overlay-theme="a" data-dismissible="false" data-history="false">
+    <div data-role="header" data-theme="a">
+      <h1>場所を削除</h1>
+    </div>
+    <div role="main" class="ui-content">
+      <p>場所を削除しますがよろしいですか？</p>
+      <div data-role="navbar" data-iconpos="top">
+        <ul>
+          <li><a href="#" id="place_delete" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">はい</a></li>
+          <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">キャンセル</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 
