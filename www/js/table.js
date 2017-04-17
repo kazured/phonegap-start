@@ -59,6 +59,8 @@ var SELECT_PLACES = "select * from places order by num asc";
 
 var INSERT_INFOS = "insert into infos (date,place,grade,memo,pic) values (?,?,?,?,?)";
 var INSERT_PLACES = "insert into places (place) values (?)";
+var INSERT_PLACE1 = "近所のジム";
+var INSERT_PLACE2 = "その他";
 
 var DELETE_INFOS_WHERE_NUM = "delete from infos where num = ?";
 var DELETE_PLACES = "delete from places";
@@ -72,39 +74,44 @@ var startDB = function() {
 
   window.sqlitePlugin.selfTest(function() {
     db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
-    //infosテーブル作成
+
+    //テーブル作成
     db.transaction(function(tx) {
       //infosテーブル作成
-      tx.executeSql(CREATE_INFOS);
+      tx.executeSql(CREATE_INFOS),[],function(res) {
+        //infosテーブル作成成功
+        //placeテーブル作成
+        tx.executeSql(CREATE_PLACES),[],function(res) {
+          //placesテーブル作成成功
+        }, function(error) {
+          rtn = false
+        }
+      }, function(error) {
+        rtn = false;
+      }
     }, function(error) {
       //console.log('Transaction ERROR: ' + error.message);
       rtn = false;
     }, function() {
-      alert("infos create ok");
-      //placesテーブル作成
-      db.sqlBatch([
-        CREATE_PLACES,
-        [ INSERT_PLACES, ['近所のジム'] ],
-        [ INSERT_PLACES, ['その他のジム'] ]
-      ], function() {
-        alert("places create ok");
-        tx.executeSql(SELECT_PLACES, [], function (tx, resultSet) {
-            for(var x = 0; x < resultSet.rows.length; x++) {
-              alert(resultSet.rows.item(x).place);
-            }
-          },
-          function (tx, error) {
-            //console.log('SELECT error: ' + error.message);
-            rtn = false;
-            alert("places select ng");
-          });
-        //console.log('Populated database OK');
-        rtn = true;
-      }, function(error) {
-        //console.log('SQL batch ERROR: ' + error.message);
-        rtn = false;
-      });
+      rtn = true;
+      alert("create ok");
     });
+
+    //placesテーブルにデータ挿入
+    if (rtn) {
+      tx.executeSql(INSERT_PLACES),[INSERT_PLACE1],function(res) {
+        //placesテーブル 1件目データ挿入成功
+        alert("1件目:" + res.insertId);
+        tx.executeSql(INSERT_PLACES),[INSERT_PLACE2],function(res) {
+          //placesテーブル 2件目データ挿入成功
+          alert("2件目:" + res.insertId);
+        }, function(error) {
+          rtn = false
+        }
+      }, function(error) {
+        rtn = false
+      }
+    }
 
   });
 
