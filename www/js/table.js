@@ -113,7 +113,7 @@ var startDB = function() {
     });
     */
 
-    db.executeSql(CREATE_PLACES, [], function (tx, resultSet) {
+    db.executeSql(CREATE_PLACES, [], function (resultSet) {
         alert("create places");
       },
       function (tx, error) {
@@ -121,7 +121,7 @@ var startDB = function() {
         rtn = false;
       });
 
-    db.executeSql(INSERT_PLACES, [INSERT_PLACE1], function (tx, resultSet) {
+    db.executeSql(INSERT_PLACES, [INSERT_PLACE1], function (resultSet) {
         alert("insert place1");
         //alert(resultSet.insertId);
       },
@@ -130,7 +130,7 @@ var startDB = function() {
         rtn = false;
       });
 
-    db.executeSql(INSERT_PLACES, [INSERT_PLACE2], function (tx, resultSet) {
+    db.executeSql(INSERT_PLACES, [INSERT_PLACE2], function (resultSet) {
         alert("insert place2");
         //alert(resultSet.insertId);
       },
@@ -139,7 +139,7 @@ var startDB = function() {
         rtn = false;
       });
 
-    db.executeSql(SELECT_PLACES, [], function (tx, resultSet) {
+    db.executeSql(SELECT_PLACES, [], function (resultSet) {
         for(var x = 0; x < resultSet.rows.length; x++) {
           alert(resultSet.rows.item(x).place);
         }
