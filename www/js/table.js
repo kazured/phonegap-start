@@ -112,6 +112,16 @@ var startDB = function() {
       alert("create ok");
     });
 
+    tx.executeSql(SELECT_PLACES, [], function (tx, resultSet) {
+        for(var x = 0; x < resultSet.rows.length; x++) {
+          alert(resultSet.rows.item(x).place);
+        }
+      },
+      function (tx, error) {
+        //console.log('SELECT error: ' + error.message);
+        rtn = false;
+      });
+
 
   });
 
