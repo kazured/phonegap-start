@@ -78,19 +78,32 @@ var startDB = function() {
     //テーブル作成
     db.transaction(function(tx) {
       //infosテーブル作成
-      tx.executeSql(CREATE_INFOS),[],function(res) {
+      tx.executeSql(CREATE_INFOS,[],function(res) {
         //infosテーブル作成成功
         //placeテーブル作成
-        tx.executeSql(CREATE_PLACES),[],function(res) {
+    /*
+        tx.executeSql(CREATE_PLACES,[],function(res) {
           //placesテーブル作成成功
         }, function(error) {
           rtn = false
           alert("create places ng");
-        }
+        });
+   */
+
+        db.sqlBatch([
+        	CREATE_PLACES,
+            [ INSERT_PLACES,[INSERT_PLACE1] ],
+            [ INSERT_PLACES,[INSERT_PLACE2] ]
+          ], function() {
+            alert('Populated database OK');
+          }, function(error) {
+            alert('SQL batch ERROR: ' + error.message);
+          });
+
       }, function(error) {
         rtn = false;
         alert("create infos ng");
-      }
+      });
     }, function(error) {
       //console.log('Transaction ERROR: ' + error.message);
       rtn = false;
@@ -99,23 +112,6 @@ var startDB = function() {
       alert("create ok");
     });
 
-    //placesテーブルにデータ挿入
-    if (rtn) {
-      tx.executeSql(INSERT_PLACES),[INSERT_PLACE1],function(res) {
-        //placesテーブル 1件目データ挿入成功
-        //alert("1件目:" + res.insertNum);
-        /*
-        tx.executeSql(INSERT_PLACES),[INSERT_PLACE2],function(res) {
-          //placesテーブル 2件目データ挿入成功
-          alert("2件目:" + res.insertNum);
-        }, function(error) {
-          rtn = false
-        }
-        */
-      }, function(error) {
-        rtn = false
-      }
-    }
 
   });
 
