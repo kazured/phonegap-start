@@ -64,7 +64,7 @@
 var db = null;
 var rtn;
 
-$(document).ready(function() {
+document.addEventListener('deviceready',function() {
   //facebook設定
   $.ajaxSetup({ cache: true });
   $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
@@ -78,6 +78,7 @@ $(document).ready(function() {
 
   //SQLite設定
   //初期設定
+  alert("test");
   rtn = startDB();
   if (rtn) {
     //infosテーブルからデータを100件取得
