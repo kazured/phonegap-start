@@ -69,32 +69,40 @@ var DELETE_PLACES = "delete from places";
  */
 var startDB = function() {
   var rtn;
-  db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
-  //infosテーブル作成
-  db.transaction(function(tx) {
+
+  window.sqlitePlugin.selfTest(function() {
+    alert("sqlite plugin ok");
+    db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
     //infosテーブル作成
-    tx.executeSql(CREATE_INFOS);
-  }, function(error) {
-    //console.log('Transaction ERROR: ' + error.message);
-    rtn = false;
-  }, function() {
-    //console.log('Populated database OK');
-    rtn = true;
-  });
-  //placesテーブル作成
-  if (rtn) {
-    db.sqlBatch([
-      CREATE_PLACES,
-      [ INSERT_PLACES, ['近所のジム'] ],
-      [ INSERT_PLACES, ['その他のジム'] ]
-    ], function() {
-      //console.log('Populated database OK');
-      rtn = true;
+    db.transaction(function(tx) {
+      //infosテーブル作成
+      tx.executeSql(CREATE_INFOS);
     }, function(error) {
-      //console.log('SQL batch ERROR: ' + error.message);
+      //console.log('Transaction ERROR: ' + error.message);
       rtn = false;
+    }, function() {
+      alert("infos create ok");
+      //placesテーブル作成
+      db.sqlBatch([
+        CREATE_PLACES,
+        [ INSERT_PLACES, ['近所のジム'] ],
+        [ INSERT_PLACES, ['その他のジム'] ]
+      ], function() {
+        alert("places create ok");
+        //console.log('Populated database OK');
+        rtn = true;
+      }, function(error) {
+        //console.log('SQL batch ERROR: ' + error.message);
+        rtn = false;
+      });
     });
-  }
+
+    rtn = true;
+
+  });
+
+
+
 
   return rtn;
 };
