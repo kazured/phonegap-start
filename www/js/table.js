@@ -71,7 +71,6 @@ var startDB = function() {
   var rtn;
 
   window.sqlitePlugin.selfTest(function() {
-    alert("sqlite plugin ok");
     db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
     //infosテーブル作成
     db.transaction(function(tx) {
@@ -89,6 +88,16 @@ var startDB = function() {
         [ INSERT_PLACES, ['その他のジム'] ]
       ], function() {
         alert("places create ok");
+        tx.executeSql(SELECT_PLACES, [], function (tx, resultSet) {
+            for(var x = 0; x < resultSet.rows.length; x++) {
+              alert(resultSet.rows.item(x).place);
+            }
+          },
+          function (tx, error) {
+            //console.log('SELECT error: ' + error.message);
+            rtn = false;
+            alert("places select ng");
+          });
         //console.log('Populated database OK');
         rtn = true;
       }, function(error) {
@@ -97,12 +106,7 @@ var startDB = function() {
       });
     });
 
-    rtn = true;
-
   });
-
-
-
 
   return rtn;
 };
