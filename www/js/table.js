@@ -49,7 +49,7 @@ var infosOnDate = [];
 var places = [];
 
 //DDL
-var CREATE_INFOS = "create table if not exists infos(num integer primary key autoincrement, date text,place text,grade text,memo test,pic blob)";
+var CREATE_INFOS = "create table if not exists infos(num integer primary key autoincrement, date text,place text,grade text,memo text,pic blob)";
 var CREATE_PLACES = "create table if not exists places(num integer primary key, place text)";
 
 //DML
