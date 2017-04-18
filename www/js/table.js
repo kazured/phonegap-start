@@ -86,12 +86,11 @@ var startDB = function() {
       rtn = false;
     }, function() {
       rtn = true;
-      alert("create ok");
     });
 
     //placesテーブルのデータ数確認
     var pNum = 0;
-    db.executeSql(SELECT_PLACES, [INSERT_PLACE1], function (rs) {
+    db.executeSql(SELECT_PLACES, [], function (rs) {
       pNum = rs.rows.item(0).mycount;
     },
     function (error) {
@@ -110,48 +109,26 @@ var startDB = function() {
           rtn = false;
       }, function() {
             rtn = true;
-            alert("insert ok");
       });
     }
 
-    /*
-    db.executeSql(CREATE_PLACES, [], function (resultSet) {
-        alert("create places");
-      },
-      function (tx, error) {
-        //console.log('SELECT error: ' + error.message);
-        rtn = false;
-      });
-
-    db.executeSql(INSERT_PLACES, [INSERT_PLACE1], function (resultSet) {
-        alert("insert place1");
-        alert(resultSet.insertId);
-      },
-      function (tx, error) {
-        //console.log('SELECT error: ' + error.message);
-        rtn = false;
-      });
-
-    db.executeSql(INSERT_PLACES, [INSERT_PLACE2], function (resultSet) {
-        alert("insert place2");
-        alert(resultSet.insertId);
-      },
-      function (tx, error) {
-        //console.log('SELECT error: ' + error.message);
-        rtn = false;
-      });
-*/
-    db.executeSql(SELECT_PLACES, [], function (resultSet) {
+    //placesにデータ設定
+    if (rtn && pNum == 0) {
+      db.executeSql(SELECT_PLACES, [], function (rs) {
+        var num;
+        var place;
         for(var x = 0; x < resultSet.rows.length; x++) {
-          alert(resultSet.rows.item(x).place);
+          num = rs.rows.item(x).num;
+          place = rs.rows.item(x).place;
+          places[x] = new ClimbPlace(num,place);
+          alert(places[x].num + "," + places[x].place);
         }
       },
       function (tx, error) {
         //console.log('SELECT error: ' + error.message);
         rtn = false;
       });
-
-
+    }
   });
 
   return rtn;
