@@ -49,7 +49,7 @@ var infosOnDate = [];
 var places = [];
 
 //DDL
-var CREATE_INFOS = "create table if not exists infos(num integer primary key autoincrement, date text,place text,grade text,memo text,pic blob)";
+var CREATE_INFOS = "create table if not exists infos(num integer primary key autoincrement, date text,place text,grade text,memo text,pic text)";
 var CREATE_PLACES = "create table if not exists places(num integer primary key, place text)";
 
 //DML
@@ -81,15 +81,7 @@ var startDB = function() {
       //infosテーブル作成
       tx.executeSql(CREATE_INFOS);
       //placeテーブル作成
-      tx.sqlBatch([
-        CREATE_PLACES,
-        [ INSERT_PLACES,[INSERT_PLACE1] ],
-        [ INSERT_PLACES,[INSERT_PLACE2] ]
-      ], function() {
-        alert('Populated database OK');
-      }, function(error) {
-        alert('SQL batch ERROR: ' + error.message);
-      });
+      tx.executeSql(CREATE_PLACES);
     }, function(error) {
       //console.log('Transaction ERROR: ' + error.message);
       rtn = false;
