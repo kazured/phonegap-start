@@ -70,12 +70,11 @@ var DELETE_PLACES = "delete from places";
  * @return {boolean} 処理が成功したらtrue、失敗したらfalseを返す
  */
 var startDB = function() {
-  var rtn;
+  var rtn = true;
 
   window.sqlitePlugin.selfTest(function() {
     db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
 
-    ///*
     //テーブル作成
     db.transaction(function(tx) {
       //infosテーブル作成
@@ -89,8 +88,33 @@ var startDB = function() {
       rtn = true;
       alert("create ok");
     });
-    //*/
-/*
+
+    //placesテーブルのデータ数確認
+    var pNum = 0;
+    db.executeSql(SELECT_PLACES, [INSERT_PLACE1], function (rs) {
+      pNum = rs.rows.item(0).mycount;
+    },
+    function (error) {
+      //console.log('SELECT error: ' + error.message);
+      rtn = false;
+    });
+
+    //placeテーブルにデータ設定
+    alert(pNum);
+    if (rtn && pNum == 0) {
+      db.transaction(function(tx) {
+        tx.executeSql(INSERT_PLACES, [INSERT_PLACE1]);
+        tx.executeSql(INSERT_PLACES, [INSERT_PLACE2]);
+      }, function(error) {
+          //console.log('Transaction ERROR: ' + error.message);
+          rtn = false;
+      }, function() {
+            rtn = true;
+            alert("insert ok");
+      });
+    }
+
+    /*
     db.executeSql(CREATE_PLACES, [], function (resultSet) {
         alert("create places");
       },
