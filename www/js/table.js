@@ -75,34 +75,20 @@ var startDB = function() {
   window.sqlitePlugin.selfTest(function() {
     db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
 
-    /*
+    ///*
     //テーブル作成
     db.transaction(function(tx) {
       //infosテーブル作成
-      tx.executeSql(CREATE_INFOS,[],function(res) {
-        //infosテーブル作成成功
-        //placeテーブル作成
-
-        tx.executeSql(CREATE_PLACES,[],function(res) {
-          //placesテーブル作成成功
-        }, function(error) {
-          rtn = false
-          alert("create places ng");
-        });
-
-        db.sqlBatch([
-        	CREATE_PLACES,
-            [ INSERT_PLACES,[INSERT_PLACE1] ],
-            [ INSERT_PLACES,[INSERT_PLACE2] ]
-          ], function() {
-            alert('Populated database OK');
-          }, function(error) {
-            alert('SQL batch ERROR: ' + error.message);
-          });
-
+      tx.executeSql(CREATE_INFOS);
+      //placeテーブル作成
+      tx.sqlBatch([
+        CREATE_PLACES,
+        [ INSERT_PLACES,[INSERT_PLACE1] ],
+        [ INSERT_PLACES,[INSERT_PLACE2] ]
+      ], function() {
+        alert('Populated database OK');
       }, function(error) {
-        rtn = false;
-        alert("create infos ng");
+        alert('SQL batch ERROR: ' + error.message);
       });
     }, function(error) {
       //console.log('Transaction ERROR: ' + error.message);
@@ -111,8 +97,8 @@ var startDB = function() {
       rtn = true;
       alert("create ok");
     });
-    */
-
+    //*/
+/*
     db.executeSql(CREATE_PLACES, [], function (resultSet) {
         alert("create places");
       },
@@ -138,7 +124,7 @@ var startDB = function() {
         //console.log('SELECT error: ' + error.message);
         rtn = false;
       });
-
+*/
     db.executeSql(SELECT_PLACES, [], function (resultSet) {
         for(var x = 0; x < resultSet.rows.length; x++) {
           alert(resultSet.rows.item(x).place);
