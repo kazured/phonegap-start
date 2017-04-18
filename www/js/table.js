@@ -117,7 +117,7 @@ var startDB = function() {
       db.executeSql(SELECT_PLACES, [], function (rs) {
         var num;
         var place;
-        for(var x = 0; x < resultSet.rows.length; x++) {
+        for(var x = 0; x < rs.rows.length; x++) {
           num = rs.rows.item(x).num;
           place = rs.rows.item(x).place;
           places[x] = new ClimbPlace(num,place);
