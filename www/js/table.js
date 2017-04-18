@@ -123,7 +123,7 @@ var startDB = function() {
 
     db.executeSql(INSERT_PLACES, [INSERT_PLACE1], function (resultSet) {
         alert("insert place1");
-        //alert(resultSet.insertId);
+        alert(resultSet.insertId);
       },
       function (tx, error) {
         //console.log('SELECT error: ' + error.message);
@@ -132,7 +132,7 @@ var startDB = function() {
 
     db.executeSql(INSERT_PLACES, [INSERT_PLACE2], function (resultSet) {
         alert("insert place2");
-        //alert(resultSet.insertId);
+        alert(resultSet.insertId);
       },
       function (tx, error) {
         //console.log('SELECT error: ' + error.message);
