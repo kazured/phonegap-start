@@ -114,7 +114,7 @@ var startDB = function() {
     }
 
     //placesにデータ設定
-    /*
+    ///*
     if (rtn && pNum == 0) {
       db.executeSql(SELECT_PLACES, [], function (rs) {
         var num;
@@ -122,7 +122,7 @@ var startDB = function() {
         for(var x = 0; x < rs.rows.length; x++) {
           num = rs.rows.item(x).num;
           place = rs.rows.item(x).place;
-          places[x] = new ClimbPlace(num,place);
+          //places[x] = new ClimbPlace(num,place);
           alert(places[x].num + "," + places[x].place);
         }
       },
@@ -131,7 +131,7 @@ var startDB = function() {
         rtn = false;
       });
     }
-    */
+    //*/
   });
 
   return rtn;
@@ -168,8 +168,10 @@ var getInfos = function() {
     rtn = false;
   }, function () {
     //console.log('transaction ok');
-    infos = null;
-    infos = [].concat(infos2);
+    if (infos2.length > 0) {
+      infos = null;
+      infos = [].concat(infos2);
+    }
     rtn = true;
   });
 
@@ -234,6 +236,7 @@ var getPlaces = function() {
 
         place = new ClimbPlace(num,place);
         place2[x] = place;
+        alert(place.num + "," + place.place);
       }
     },
     function (tx, error) {

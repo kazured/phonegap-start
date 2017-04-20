@@ -84,9 +84,11 @@ document.addEventListener('deviceready',function() {
   if (rtn) {
     //infosテーブルからデータを100件取得
     rtn = getInfos();
+    alert("getInfos:"rtn);
     if (rtn) {
       //placesテーブルから場所を取得
       rtn = getPlaces();
+      alert("getPlaces:"rtn);
     }
     if (rtn) {
       dbSetFlg = true;
