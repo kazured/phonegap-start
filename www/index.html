@@ -63,6 +63,7 @@
 <script>
 var db = null;
 var rtn;
+var dbSetFlg = false;
 
 document.addEventListener('deviceready',function() {
   //facebook設定
@@ -87,10 +88,12 @@ document.addEventListener('deviceready',function() {
       //placesテーブルから場所を取得
       rtn = getPlaces();
     }
+    if (rtn) {
+      dbSetFlg = true;
+    }
   }
   else {
     alert(ERROR_MESSAGE);
-    alert("1");
   }
 });
 
@@ -436,22 +439,11 @@ $(function() {
     alert("index:" + index);
   });
 
+  //アプリ起動時 初期設定
+  //ローディング開始
+  startLoading();
 
-  //登った場所のセレクトボックス設定
-  setPlaceSelectBox('#new_climb_place');
-
-  //登った場所のリスト設定
-  setPlaceList();
-
-  //登った場所のラジオボタン設定
-  setPlaceRadio();
-
-  //最新のメモをリスト設定
-  setNewInfo(infos);
-
-  //過去のメモをリスト設定
-  setInfoList("#infoList2",infos);
-
+  dbSetWait();
 
 });
 

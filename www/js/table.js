@@ -91,7 +91,8 @@ var startDB = function() {
     //placesテーブルのデータ数確認
     var pNum = 0;
     db.executeSql(SELECT_PLACES, [], function (rs) {
-      pNum = rs.rows.item(0).mycount;
+      //pNum = rs.rows.item(0).mycount;
+      pNum = rs.rows.length;
     },
     function (error) {
       //console.log('SELECT error: ' + error.message);
@@ -113,6 +114,7 @@ var startDB = function() {
     }
 
     //placesにデータ設定
+    /*
     if (rtn && pNum == 0) {
       db.executeSql(SELECT_PLACES, [], function (rs) {
         var num;
@@ -129,6 +131,7 @@ var startDB = function() {
         rtn = false;
       });
     }
+    */
   });
 
   return rtn;
@@ -184,6 +187,7 @@ var getInfosOnDate = function(searchDate) {
   var num,date,place,grade,memo,pic;
   db.transaction(function (tx) {
     tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (tx, resultSet) {
+      var info;
       for(var x = 0; x < resultSet.rows.length; x++) {
         num = resultSet.rows.item(x).num;
         date = resultSet.rows.item(x).date;
@@ -191,7 +195,7 @@ var getInfosOnDate = function(searchDate) {
         memo = resultSet.rows.item(x).memo;
         pic = resultSet.rows.item(x).pic;
 
-        var info = new ClimbInfo(num,date,place,grade,memo,pic);
+        info = new ClimbInfo(num,date,place,grade,memo,pic);
         infos2[x] = info;
       }
     },
@@ -223,11 +227,12 @@ var getPlaces = function() {
   var num,place;
   db.transaction(function (tx) {
     tx.executeSql(SELECT_PLACES, [], function (tx, resultSet) {
+      var place;
       for(var x = 0; x < resultSet.rows.length; x++) {
         num = resultSet.rows.item(x).num;
         place = resultSet.rows.item(x).place;
 
-        var place = new ClimbPlace(num,place);
+        place = new ClimbPlace(num,place);
         place2[x] = place;
       }
     },

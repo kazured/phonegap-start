@@ -215,6 +215,39 @@ var deletePlaceFromArray = function() {
 };
 
 /**
+ * DB初期設定のWait処理
+ */
+var dbSetWait = setInterval(function() {
+  //終了条件
+  if (dbSetFlg) {
+    clearInterval(dbSetWait);
+    screenSet();
+    //ローディング終了
+    stopLoading();
+  }
+}, 500);
+
+/**
+ * 画面の初期設定処理
+ */
+var screenSet = function() {
+  //登った場所のセレクトボックス設定
+  setPlaceSelectBox('#new_climb_place');
+
+  //登った場所のリスト設定
+  setPlaceList();
+
+  //登った場所のラジオボタン設定
+  setPlaceRadio();
+
+  //最新のメモをリスト設定
+  setNewInfo(infos);
+
+  //過去のメモをリスト設定
+  setInfoList("#infoList2",infos);
+};
+
+/**
  * テストデータを設定する
  */
 var setTestData = function() {
