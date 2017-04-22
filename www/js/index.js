@@ -53,11 +53,13 @@ var app = {
         rtn = startDB();
         if (rtn) {
           //infosテーブルからデータを100件取得
+alert("getInfos");
           rtn = getInfos();
           alert("getInfos:" + rtn);
         }
         if (rtn) {
           //placesテーブルから場所を取得
+alert("getPlaces");
           rtn = getPlaces();
           alert("getPlaces:" + rtn);
         }
@@ -65,6 +67,7 @@ var app = {
         //stopLoading();
         if (rtn) {
           dbSetFlg = true;
+alert("dbSetFlg:"+dbSetFlg);
         }
         else {
           alert(ERROR_MESSAGE);

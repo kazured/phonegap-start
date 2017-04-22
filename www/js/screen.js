@@ -220,6 +220,7 @@ var deletePlaceFromArray = function() {
 var dbSetWait = setInterval(function() {
   //終了条件
   if (dbSetFlg) {
+alert("clearInterval");
     clearInterval(dbSetWait);
   }
 }, 500);
