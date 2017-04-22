@@ -48,7 +48,7 @@
 </head>
 <body>
 <div class="app">
-  <h1>PhoneGap</h1>
+  <h1>Climb Memo</h1>
   <div id="deviceready" class="blink">
     <p class="event listening">Connecting to Device</p>
     <p class="event received">Device is Ready</p>
@@ -57,12 +57,11 @@
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
 <script type="text/javascript">
-  app.initialize();
-</script>
-<script type="text/javascript">
 var db = null;
 var rtn;
 var dbSetFlg = false;
+
+app.initialize();
 
 //app.initialize();
 
@@ -75,31 +74,6 @@ $(document).on('pagecontainerbeforechange',function(){
   if (!dbSetFlg) {
 alert("dbSetFlg:"+dbSetFlg);
     //dbSetWait();
-///*
-    //startLoading();
-    //SQLite設定
-    //初期設定
-    alert("test");
-    rtn = startDB();
-    if (rtn) {
-      //infosテーブルからデータを100件取得
-      rtn = getInfos();
-      alert("getInfos:" + rtn);
-    }
-    if (rtn) {
-      //placesテーブルから場所を取得
-      rtn = getPlaces();
-      alert("getPlaces:" + rtn);
-    }
-
-    //stopLoading();
-    if (rtn) {
-      dbSetFlg = true;
-    }
-    else {
-      alert(ERROR_MESSAGE);
-    }
-//*/
   }
 });
 
