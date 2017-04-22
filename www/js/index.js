@@ -34,30 +34,6 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
-
-        //SQLite設定
-        //初期設定
-      alert("test");
-        rtn = startDB();
-        if (rtn) {
-          //infosテーブルからデータを100件取得
-          rtn = getInfos();
-          alert("getInfos:" + rtn);
-        }
-        if (rtn) {
-          //placesテーブルから場所を取得
-          rtn = getPlaces();
-          alert("getPlaces:" + rtn);
-        }
-
-        if (rtn) {
-          dbSetFlg = true;
-        }
-        else {
-          alert(ERROR_MESSAGE);
-        }
-
-
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
