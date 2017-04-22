@@ -140,14 +140,26 @@ var setInfoList = function(id,infos) {
  * 登った最新の情報を設定
  */
 var setNewInfo = function(infos) {
+  var newInfoList = $("#infoList1");
+
+  $("#infoList1 li:last").remove();
+
   //最新の情報の設定場所を取得
+  /*
   var li = $("#infoList1 li:last");
   var h2 = li.find("h2");
   var p = li.find("p");
+  */
+
+  var li = $('<li>');
+  var img = $('<img>');
+  var h2 = $('<h2>');
+  var p = $('<p>');
 
   var memo;
 
   //最新のメモを１件設定
+  img.attr('src','img/new.svg');
   if (infos != null && infos.length >= 1) {
     h2.text(infos[0].date);
     memo = infos[0].memo;
@@ -155,12 +167,20 @@ var setNewInfo = function(infos) {
       memo = $.mb_substr(memo,0,LI_STR_LEN) + "...";
     }
     p.text(memo);
+    li.append(img);
+    li.append(h2);
+    li.append(p);
+    li.wrapInner("<a href=\"#\"></a>")
   }
   else {
     h2.text('メモが登録されていません');
-    p.text("");
+    li.append(img);
+    li.append(h2);
   }
 
+  newInfoList.append(li);
+  newInfoList.listview();
+  newInfoList.listview('refresh');
 };
 
 /**
@@ -228,26 +248,6 @@ alert("clearInterval End");
 }, 500);
 
 /**
- * 画面の初期設定処理
- */
-var screenSet = function() {
-  //登った場所のセレクトボックス設定
-  setPlaceSelectBox('#new_climb_place');
-
-  //登った場所のリスト設定
-  setPlaceList();
-
-  //登った場所のラジオボタン設定
-  setPlaceRadio();
-
-  //最新のメモをリスト設定
-  setNewInfo(infos);
-
-  //過去のメモをリスト設定
-  setInfoList("#infoList2",infos);
-};
-
-/**
  * テストデータを設定する
  */
 var setTestData = function() {
@@ -272,7 +272,9 @@ var setTestData = function() {
 $(document).on('change', '#new_climb_pic', function() {
   var file = this.files[0];
   var name = file.name;
-  if(name.match(/.gif$|.png$|.jpg$|.jpeg$/) == null) {
+alert(name);
+alert(name.match(/.gif$|.png$|.jpg$|.jpeg$/));
+  if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
     alert("画像ファイルを指定してください");
     $('#new_climb_img').attr('src', '');
   }
