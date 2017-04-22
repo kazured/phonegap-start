@@ -67,7 +67,7 @@ var rtn;
 var dbSetFlg = false;
 
 document.addEventListener('deviceready',function() {
-/*
+///*
   //SQLite設定
   //初期設定
   alert("test");
@@ -89,7 +89,7 @@ document.addEventListener('deviceready',function() {
   else {
     alert(ERROR_MESSAGE);
   }
-*/
+//*/
 });
 
 //ページ指定無しのpagecreateイベント
@@ -101,7 +101,7 @@ $(document).on('pagecreate',function(){
   //アプリ起動時にDBのセッティングを行う
   if (!dbSetFlg) {
     //dbSetWait();
-
+/*
     startLoading();
     //SQLite設定
     //初期設定
@@ -126,7 +126,7 @@ $(document).on('pagecreate',function(){
       alert(ERROR_MESSAGE);
     }
   }
-
+*/
   //テストデータ設定
   //setTestData();
 });
