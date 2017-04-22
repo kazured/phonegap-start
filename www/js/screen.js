@@ -322,34 +322,11 @@ $(document).on('click', '#info_create', function() {
     alert("写真以外は入力してください");
   }
   else {
-    //ローディング開始
-    startLoading();
+    //データ処理画面に移動
+    $('body').pagecontainer('change', '#start');
 
     //infosテーブルに登録
-    var num = 0;
-    num = insertInfo(date,place,grade,memo,pic);
-
-    //ローディング終了
-    stopLoading();
-
-    if (num != -1) {
-      //infosの先頭に追加
-      var climbInfo = new ClimbInfo(num,date,place,grade,memo,pic);
-      infos.unshift(climbInfo);
-
-      //最新のメモをリスト設定
-      setNewInfo(infos);
-
-      //過去のメモをリスト設定
-      setInfoList("#infoList2",infos);
-
-      //ホーム画面に移動
-      $('body').pagecontainer('change', '#home');
-    }
-    else {
-      alert(ERROR_MESSAGE);
-    }
-
+    insertInfo(date,place,grade,memo,pic);
   }
 });
 

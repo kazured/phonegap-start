@@ -67,7 +67,6 @@ var DELETE_PLACES = "delete from places";
 
 /**
  * SQLite初期設定
- * @return {boolean} 処理が成功したらtrue、失敗したらfalseを返す
  */
 var startDB = function() {
   var rtn = true;
@@ -76,7 +75,6 @@ var startDB = function() {
 
   window.sqlitePlugin.selfTest(function() {
     db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
-alert("window.sqlitePlugin.selfTest:" + rtn);
 
     if (sFlg == null) { //初めてのアクセス
       db.transaction(function(tx) {
@@ -88,7 +86,6 @@ alert("window.sqlitePlugin.selfTest:" + rtn);
         //console.log('Transaction ERROR: ' + error.message);
         rtn = false;
       }, function() {
-alert("テーブル作成完了:" + rtn);
         db.transaction(function(tx2) {
           tx2.executeSql(INSERT_PLACES, [INSERT_PLACE1]);
           tx2.executeSql(INSERT_PLACES, [INSERT_PLACE2]);
@@ -98,7 +95,6 @@ alert("テーブル作成完了:" + rtn);
           $('body').pagecontainer('change', '#error');
           //rtn = false;
         }, function() {
-alert("insert:"+rtn);
           places[0] = new ClimbPlace(0,INSERT_PLACE1);
           places[1] = new ClimbPlace(1,INSERT_PLACE2);
 
@@ -115,7 +111,6 @@ alert("insert:"+rtn);
       //infosテーブルからデータ取得
       db.executeSql(SELECT_INFOS_GET_NEW_100, [], function(rs) {
         num = rs.rows.length;
-  alert("infos num:"+num);
         if (num > 0) {
           var infos2 = [];
           for(var x = 0; x < num; x++) {
@@ -154,120 +149,6 @@ alert("insert:"+rtn);
         $('body').pagecontainer('change', '#error');
       });
     }
-
-/*
-    //placesテーブル作成、データ登録
-    db.executeSql(CREATE_PLACES, [], function(rs1) {
-      // テーブル作成成功
-      // データ取得のSQL実行
-      db.executeSql(SELECT_PLACES, [], function(rs2) {
-        num = rs2.rows.length;
-alert("num:"+num);
-        if (num == 0) {
-          db.transaction(function(tx) {
-            tx.executeSql(INSERT_PLACES, [INSERT_PLACE1]);
-            tx.executeSql(INSERT_PLACES, [INSERT_PLACE2]);
-          }, function(error) {
-            //console.log('Transaction ERROR: ' + error.message);
-            rtn = false;
-          }, function() {
-alert("insert:"+rtn);
-            places[0] = new ClimbPlace(0,INSERT_PLACE1);
-            places[1] = new ClimbPlace(1,INSERT_PLACE2);
-            rtn = true;
-          });
-        }
-        else {
-          var places2 = [];
-          for(var x = 0; x < num; x++) {
-            num = rs2.rows.item(x).num;
-            place = rs2.rows.item(x).place;
-
-            var place = new ClimbPlace(num,place);
-            places2[x] = place;
-          }
-          places = null;
-          places = [].concat(places2);
-          rtn = true;
-        }
-      });
-    }, function(error) {
-      rtn = false;
-    });
-alert("places rtn:"+rtn);
-
-    //infosテーブル作成
-    db.executeSql(CREATE_INFOS, [], function(rs1) {
-        // テーブル作成成功
-        // データ取得のSQL実行
-        db.executeSql(SELECT_INFOS_GET_NEW_100, [], function(rs2) {
-          num = rs2.rows.length;
-alert("infos num:"+num);
-          if (num > 0) {
-            var infos2 = [];
-            for(var x = 0; x < num; x++) {
-                num = rs2.rows.item(x).num;
-                date = rs2.rows.item(x).date;
-                place = rs2.rows.item(x).place;
-                grade = rs2.rows.item(x).grade;
-                memo = rs2.rows.item(x).memo;
-                pic = rs2.rows.item(x).pic;
-
-                var info = new ClimbInfo(num,date,place,grade,memo,pic);
-                infos2[x] = info;
-            }
-            infos = null;
-            infos = [].concat(info2);
-            rtn = true;
-          }
-        });
-      }, function(error) {
-      rtn = false;
-    });
-
-alert("infos rtn:"+rtn);
-*/
-
-/*
-    //テーブル作成
-    db.transaction(function(tx) {
-      //infosテーブル作成
-      tx.executeSql(CREATE_INFOS);
-      //placeテーブル作成
-      tx.executeSql(CREATE_PLACES);
-    }, function(error) {
-      //console.log('Transaction ERROR: ' + error.message);
-      rtn = false;
-    }, function() {
-      alert("テーブル作成完了:" + rtn);
-      db.executeSql(SELECT_PLACES, [], function (rs) {
-        //pNum = rs.rows.item(0).mycount;
-  alert("num前");
-  alert("num後"+rs.rows.length);
-        num = rs.rows.length;
-        rtn = true;
-      },
-      function (error) {
-        //console.log('SELECT error: ' + error.message);
-        rtn = false;
-      });
-    });
-
-    //placeテーブルにデータ設定
-    alert("num:"+num);
-    alert("rtn:"+rtn);
-    if (rtn && num == 0) {
-      db.transaction(function(tx) {
-        tx.executeSql(INSERT_PLACES, [INSERT_PLACE1]);
-        tx.executeSql(INSERT_PLACES, [INSERT_PLACE2]);
-      }, function(error) {
-        //console.log('Transaction ERROR: ' + error.message);
-        rtn = false;
-      }, function() {
-        rtn = true;
-      });
-    }
-    */
   });
 
 
@@ -420,7 +301,6 @@ var deletePlaces = function() {
 
 /**
  * infosテーブルにメモを登録する
- * @return {INTEGER} 処理が成功したら追加されたレコードの番号(num?)、失敗したら-1を返す
  */
 var insertInfo = function(date,place,grade,memo,pic) {
   var num;
@@ -438,9 +318,20 @@ var insertInfo = function(date,place,grade,memo,pic) {
     num = -1;
   }, function() {
     //console.log('transaction ok');
+    //infosの先頭に追加
+    var climbInfo = new ClimbInfo(num,date,place,grade,memo,pic);
+    infos.unshift(climbInfo);
+
+    //最新のメモをリスト設定
+    setNewInfo(infos);
+
+    //過去のメモをリスト設定
+    setInfoList("#infoList2",infos);
+
+    //ホーム画面に移動
+    $('body').pagecontainer('change', '#home');
   });
 
-  return num;
 };
 
 /**

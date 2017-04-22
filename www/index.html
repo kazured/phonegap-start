@@ -63,21 +63,6 @@ var dbSetFlg = false;
 
 app.initialize();
 
-//app.initialize();
-
-//ページ指定無しのpagecreateイベント
-//$(document).on('pagecontainerbeforechange',function(){
-  //テストデータ設定
-  //setTestData();
-
-  //アプリ起動時にDBのセッティングを行う
-  //if (!dbSetFlg) {
-//alert("dbSetFlg:"+dbSetFlg);
-    //dbSetWait();
-//alert("dbSetFlg End");
-  //}
-//});
-
 //#home pagecreate
 $(document).on('pagecreate', '#home', function() {
   //ローディング画像向け設定
@@ -161,6 +146,9 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
   </div>
   <div role="main" class="ui-content">
 
+    <p></p>
+    <p></p>
+    <p></p>
     <div class="center-wrapper">
       <div data-role="button">データ読み込み中...</div>
       <img src="img/loading.gif">
@@ -177,6 +165,9 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
   </div>
   <div role="main" class="ui-content">
 
+    <p></p>
+    <p></p>
+    <p></p>
     <div class="center-wrapper">
       <div data-role="button">システムエラー</div>
       <img src="img/loading.gif">
