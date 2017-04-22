@@ -564,39 +564,6 @@ $(document).on('click', '#old_delete', function() {
   alert("index:" + index);
 });
 
-//場所を並び替える
-$(document).on('pagecreate','#climb_edit_places',function(){
-  var $listview = $('#listview[data-role="listview"]');
-  var $switch = $('input#switch[type="checkbox"]');
-  var $output = $('input#output[type="text"][readonly]');
-  $listview.sortable({
-    items: 'li:not([data-role="list-divider"]:first-child)',
-    cancel: 'li[data-role="list-divider"]',
-    axis: 'y'
-  });
-  $switch.on('change',function(){
-    if($switch.is(':checked')){
-      $listview.disableSelection().sortable('enable');
-    }else{
-      if($listview.is(':has(> li.ui-sortable-helper)')){
-        // touchend が発火しなかったときの片付け
-        $listview.sortable('cancel').listview();
-        $listview.sortable('cancel').listview('refresh');
-      }
-      $listview.sortable('disable').enableSelection();
-    }
-  }).trigger('change');
-  $listview.on('sortupdate',function(){
-    $listview.listview();
-    $listview.listview('refresh');
-    $output.val($listview.sortable('toArray',{attribute:'data-value'}).join(''));
-  }).trigger('sortupdate');
-  $listview.on('vclick','a',function(){
-    var $li = $(this).parents('li');
-    //alert('This is "'+$li.text()+'"\ndata-value: '+$li.attr('data-value'));
-  });
-});
-
 //facebookでシェア
 $(document).on('click', '#shareFB', function() {
     var index = $('#climb_old_memo').data('index');

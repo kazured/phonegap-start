@@ -27,7 +27,7 @@
 <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 <link rel="stylesheet" type="text/css" href="css/index.css" />
-<title>Climbing Memo</title>
+<title>Climb Memo</title>
 
 <link rel="stylesheet" href="themes/climbingmemo.min.css" />
 <link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
@@ -58,15 +58,15 @@ var dbSetFlg = false;
 //app.initialize();
 
 //ページ指定無しのpagecreateイベント
-$(document).on('pagecreate',function(){
-  //ローディング画像向け設定
-  $html = $('html,body');
-  $mask = $('<div class="mask"></div>');
+$(document).on('pagecontainerbeforechange',function(){
+  //テストデータ設定
+  //setTestData();
 
   //アプリ起動時にDBのセッティングを行う
   if (!dbSetFlg) {
+alert("dbSetFlg:"+dbSetFlg);
     //dbSetWait();
-/*
+///*
     //startLoading();
     //SQLite設定
     //初期設定
@@ -90,16 +90,21 @@ $(document).on('pagecreate',function(){
     else {
       alert(ERROR_MESSAGE);
     }
-*/
+//*/
   }
-  //テストデータ設定
-  setTestData();
 });
 
 //#home pagecreate
 $(document).on('pagecreate', '#home', function() {
+  //ローディング画像向け設定
+  $html = $('html,body');
+  $mask = $('<div class="mask"></div>');
+
   //最新のメモをリスト設定
   setNewInfo(infos);
+
+  //登った場所のリスト設定
+  setPlaceList("#sortPlaceList");
 });
 
 //#climb_new_memo pagecreate
@@ -124,10 +129,37 @@ $(document).on('pagecreate', '#climb_new_place', function() {
 
 });
 
-//#climb_sort_places pagecreate
-$(document).on('pagecreate', '#climb_sort_places', function() {
-  //登った場所のリスト設定
-  setPlaceList("#sortPlaceList");
+//場所を並び替える
+$(document).on('pagecreate','#climb_sort_places',function(){
+  var $listview = $('#sortPlaceList[data-role="listview"]');
+  var $switch = $('input#switch[type="checkbox"]');
+  var $output = $('input#output[type="text"][readonly]');
+  $listview.sortable({
+    items: 'li:not([data-role="list-divider"]:first-child)',
+    cancel: 'li[data-role="list-divider"]',
+    axis: 'y'
+  });
+  $switch.on('change',function(){
+    if($switch.is(':checked')){
+      $listview.disableSelection().sortable('enable');
+    }else{
+      if($listview.is(':has(> li.ui-sortable-helper)')){
+        // touchend が発火しなかったときの片付け
+        $listview.sortable('cancel').listview();
+        $listview.sortable('cancel').listview('refresh');
+      }
+      $listview.sortable('disable').enableSelection();
+    }
+  }).trigger('change');
+  $listview.on('sortupdate',function(){
+    $listview.listview();
+    $listview.listview('refresh');
+    $output.val($listview.sortable('toArray',{attribute:'data-value'}).join(''));
+  }).trigger('sortupdate');
+  $listview.on('vclick','a',function(){
+    var $li = $(this).parents('li');
+    //alert('This is "'+$li.text()+'"\ndata-value: '+$li.attr('data-value'));
+  });
 });
 
 //#climb_delete_place pagecreate

@@ -72,8 +72,11 @@ var DELETE_PLACES = "delete from places";
 var startDB = function() {
   var rtn = true;
 
+alert("startDB:" + rtn);
   window.sqlitePlugin.selfTest(function() {
+alert("window.sqlitePlugin.selfTest:" + rtn);
     db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
+alert("window.sqlitePlugin.selfTest:" + rtn);
 
     //テーブル作成
     db.transaction(function(tx) {
