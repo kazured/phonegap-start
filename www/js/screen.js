@@ -125,6 +125,7 @@ var setInfoList = function(id,infos) {
 
       li.append(h2);
       li.append(p);
+      li.wrapInner("<a href=\"#\"></a>")
       lis.push(li);
     });
     //    <li data-value="a"><a href="#">ベースキャンプ</a></li>
@@ -267,7 +268,8 @@ var setTestData = function() {
 };
 
 //メモ新規登録画面の画像ファイル読み込み
-$('#new_climb_pic').on("change", function() {
+//$('#new_climb_pic').on("change", function() {
+$(document).on('change', '#new_climb_pic', function() {
   var file = this.files[0];
   var name = file.name;
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$/) == null) {

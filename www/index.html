@@ -63,6 +63,8 @@ var dbSetFlg = false;
 
 app.initialize();
 
+//setTestData();
+
 //#home pagecreate
 $(document).on('pagecreate', '#home', function() {
   //ローディング画像向け設定
@@ -208,7 +210,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
 
     <ul data-role="listview" data-inset="true"  id="infoList1" data-theme="a">
       <li data-role="list-divider">最近のメモ</li>
-      <li><img src="img/new.svg"><h2></h2><p></p></li>
+      <li><a href="#"><img src="img/new.svg"><h2></h2><p></p></a></li>
     </ul>
 
   </div>
