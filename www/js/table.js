@@ -71,10 +71,9 @@ var DELETE_PLACES = "delete from places";
  */
 var startDB = function() {
   var rtn = true;
+  var num = 0;
 
-alert("startDB:" + rtn);
   window.sqlitePlugin.selfTest(function() {
-alert("window.sqlitePlugin.selfTest:" + rtn);
     db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
 alert("window.sqlitePlugin.selfTest:" + rtn);
 
@@ -88,59 +87,50 @@ alert("window.sqlitePlugin.selfTest:" + rtn);
       //console.log('Transaction ERROR: ' + error.message);
       rtn = false;
     }, function() {
-      rtn = true;
-    });
-
-alert("テーブル作成完了:" + rtn);
-
-    //placesテーブルのデータ数確認
-    if (rtn) {
-      var pNum = 0;
+      alert("テーブル作成完了:" + rtn);
       db.executeSql(SELECT_PLACES, [], function (rs) {
         //pNum = rs.rows.item(0).mycount;
-alert("pNum前");
-        pNum = rs.rows.length;
-alert("pNum後");
+  alert("num前");
+  alert("num後"+rs.rows.length);
+        num = rs.rows.length;
+        rtn = true;
       },
       function (error) {
         //console.log('SELECT error: ' + error.message);
         rtn = false;
       });
-    }
+    });
 
     //placeテーブルにデータ設定
-    alert("pNum:"+pNum);
-    if (rtn && pNum == 0) {
+    alert("num:"+num);
+    alert("rtn:"+rtn);
+    if (rtn && num == 0) {
       db.transaction(function(tx) {
         tx.executeSql(INSERT_PLACES, [INSERT_PLACE1]);
         tx.executeSql(INSERT_PLACES, [INSERT_PLACE2]);
       }, function(error) {
-          //console.log('Transaction ERROR: ' + error.message);
-          rtn = false;
-      }, function() {
-            rtn = true;
-      });
-    }
-
-    //placesにデータ設定
-    ///*
-    if (rtn && pNum == 0) {
-      db.executeSql(SELECT_PLACES, [], function (rs) {
-        var num;
-        var place;
-        for(var x = 0; x < rs.rows.length; x++) {
-          num = rs.rows.item(x).num;
-          place = rs.rows.item(x).place;
-          //places[x] = new ClimbPlace(num,place);
-          alert(places[x].num + "," + places[x].place);
-        }
-      },
-      function (tx, error) {
-        //console.log('SELECT error: ' + error.message);
+        //console.log('Transaction ERROR: ' + error.message);
         rtn = false;
+      }, function() {
+        rtn = true;
+//        /*
+        db.executeSql(SELECT_PLACES, [], function (rs) {
+          var num;
+          var place;
+          for(var x = 0; x < rs.rows.length; x++) {
+            num = rs.rows.item(x).num;
+            place = rs.rows.item(x).place;
+            //places[x] = new ClimbPlace(num,place);
+            alert(places[x].num + "," + places[x].place);
+          }
+        },
+        function (tx, error) {
+          //console.log('SELECT error: ' + error.message);
+          rtn = false;
+        });
+//        */
       });
     }
-    //*/
   });
 
   return rtn;
