@@ -88,16 +88,22 @@ var startDB = function() {
       rtn = true;
     });
 
+alert("テーブル作成完了:" + rtn);
+
     //placesテーブルのデータ数確認
-    var pNum = 0;
-    db.executeSql(SELECT_PLACES, [], function (rs) {
-      //pNum = rs.rows.item(0).mycount;
-      pNum = rs.rows.length;
-    },
-    function (error) {
-      //console.log('SELECT error: ' + error.message);
-      rtn = false;
-    });
+    if (rtn) {
+      var pNum = 0;
+      db.executeSql(SELECT_PLACES, [], function (rs) {
+        //pNum = rs.rows.item(0).mycount;
+alert("pNum前");
+        pNum = rs.rows.length;
+alert("pNum後");
+      },
+      function (error) {
+        //console.log('SELECT error: ' + error.message);
+        rtn = false;
+      });
+    }
 
     //placeテーブルにデータ設定
     alert(pNum);
