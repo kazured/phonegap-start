@@ -47,7 +47,7 @@
         <script src="js/facebook.js"></script>
 
     </head>
-    <body>
+    <body onload="onLoad()">
         <div class="app">
             <h1>Climb Memo</h1>
             <div id="deviceready" class="blink">
@@ -62,15 +62,20 @@
         </script>
 
 <script>
+function onLoad() {
+    document.addEventListener("deviceready", onDeviceReady, false);
+}
+
 var db = null;
 var rtn;
 var dbSetFlg = false;
 
-document.addEventListener('deviceready',function() {
+function onDeviceReady() {
+//document.addEventListener('deviceready',function() {
 ///*
   //SQLite設定
   //初期設定
-  alert("test");
+alert("test");
   rtn = startDB();
   if (rtn) {
     //infosテーブルからデータを100件取得
@@ -90,7 +95,8 @@ document.addEventListener('deviceready',function() {
     alert(ERROR_MESSAGE);
   }
 //*/
-});
+//});
+}
 
 //ページ指定無しのpagecreateイベント
 $(document).on('pagecreate',function(){
