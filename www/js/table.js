@@ -229,7 +229,6 @@ var getPlaces = function() {
   var num,place;
   db.transaction(function (tx) {
     tx.executeSql(SELECT_PLACES, [], function (tx, resultSet) {
-      var place;
       for(var x = 0; x < resultSet.rows.length; x++) {
         num = resultSet.rows.item(x).num;
         place = resultSet.rows.item(x).place;
