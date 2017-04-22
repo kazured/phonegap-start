@@ -72,11 +72,90 @@ var DELETE_PLACES = "delete from places";
 var startDB = function() {
   var rtn = true;
   var num = 0;
+  var sFlg = window.localStorage.getItem("sFlg");
 
   window.sqlitePlugin.selfTest(function() {
     db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
 alert("window.sqlitePlugin.selfTest:" + rtn);
 
+    if (sFlg == null) { //初めてのアクセス
+      db.transaction(function(tx) {
+        //infosテーブル作成
+        tx.executeSql(CREATE_INFOS);
+        //placeテーブル作成
+        tx.executeSql(CREATE_PLACES);
+      }, function(error) {
+        //console.log('Transaction ERROR: ' + error.message);
+        rtn = false;
+      }, function() {
+alert("テーブル作成完了:" + rtn);
+        db.transaction(function(tx2) {
+          tx2.executeSql(INSERT_PLACES, [INSERT_PLACE1]);
+          tx2.executeSql(INSERT_PLACES, [INSERT_PLACE2]);
+        }, function(error) {
+          //console.log('Transaction ERROR: ' + error.message);
+          //エラー画面に移動
+          $('body').pagecontainer('change', '#error');
+          //rtn = false;
+        }, function() {
+alert("insert:"+rtn);
+          places[0] = new ClimbPlace(0,INSERT_PLACE1);
+          places[1] = new ClimbPlace(1,INSERT_PLACE2);
+
+          //localStorageにセット
+          window.localStorage.getItem("sFlg","1");
+
+          //ホーム画面に移動
+          $('body').pagecontainer('change', '#home');
+          //rtn = true;
+        });
+      });
+    }
+    else {
+      //infosテーブルからデータ取得
+      db.executeSql(SELECT_INFOS_GET_NEW_100, [], function(rs) {
+        num = rs.rows.length;
+  alert("infos num:"+num);
+        if (num > 0) {
+          var infos2 = [];
+          for(var x = 0; x < num; x++) {
+            num = rs.rows.item(x).num;
+            date = rs.rows.item(x).date;
+            place = rs.rows.item(x).place;
+            grade = rs.rows.item(x).grade;
+            memo = rs.rows.item(x).memo;
+            pic = rs.rows.item(x).pic;
+
+            var info = new ClimbInfo(num,date,place,grade,memo,pic);
+            infos2[x] = info;
+          }
+          infos = [].concat(info2);
+        }
+        //placesテーブルからデータ取得
+        db.executeSql(SELECT_PLACES, [], function(rs2) {
+          var places2 = [];
+          for(var x = 0; x < num; x++) {
+            num = rs2.rows.item(x).num;
+            place = rs2.rows.item(x).place;
+
+            var place = new ClimbPlace(num,place);
+            places2[x] = place;
+          }
+          places = null;
+          places = [].concat(places2);
+          //ホーム画面に移動
+          $('body').pagecontainer('change', '#home');
+        }, function(error) {
+          //エラー画面に移動
+          $('body').pagecontainer('change', '#error');
+        });
+      }, function(error) {
+        //エラー画面に移動
+        $('body').pagecontainer('change', '#error');
+      });
+    }
+
+/*
     //placesテーブル作成、データ登録
     db.executeSql(CREATE_PLACES, [], function(rs1) {
       // テーブル作成成功
@@ -147,7 +226,7 @@ alert("infos num:"+num);
     });
 
 alert("infos rtn:"+rtn);
-
+*/
 
 /*
     //テーブル作成
@@ -191,7 +270,8 @@ alert("infos rtn:"+rtn);
     */
   });
 
-  return rtn;
+
+  //return rtn;
 };
 
 /**

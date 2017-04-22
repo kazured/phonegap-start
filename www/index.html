@@ -66,17 +66,17 @@ app.initialize();
 //app.initialize();
 
 //ページ指定無しのpagecreateイベント
-$(document).on('pagecontainerbeforechange',function(){
+//$(document).on('pagecontainerbeforechange',function(){
   //テストデータ設定
   //setTestData();
 
   //アプリ起動時にDBのセッティングを行う
-  if (!dbSetFlg) {
+  //if (!dbSetFlg) {
 //alert("dbSetFlg:"+dbSetFlg);
-    dbSetWait();
-alert("dbSetFlg End");
-  }
-});
+    //dbSetWait();
+//alert("dbSetFlg End");
+  //}
+//});
 
 //#home pagecreate
 $(document).on('pagecreate', '#home', function() {
@@ -153,6 +153,32 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
 });
 
 </script>
+
+<!-- startページ -->
+<div data-role="page" id="start" data-theme="a">
+  <div data-role="header" data-theme="a">
+    <h1>Climb Memo</h1>
+  </div>
+  <div role="main" class="ui-content">
+
+    データ読み込み中...
+
+  </div>
+
+</div>
+
+<!-- errorページ -->
+<div data-role="page" id="error" data-theme="a">
+  <div data-role="header" data-theme="a">
+    <h1>Climb Memo</h1>
+  </div>
+  <div role="main" class="ui-content">
+
+    システムエラーにより起動できません
+
+  </div>
+
+</div>
 
 <!-- Homeページ -->
 <div data-role="page" id="home" data-theme="a">

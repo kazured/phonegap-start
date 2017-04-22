@@ -50,8 +50,9 @@ var app = {
         //startLoading();
         //SQLite設定
         //初期設定
-        rtn = startDB();
-
+        //rtn = startDB();
+        startDB();
+/*
         //stopLoading();
         if (rtn) {
           dbSetFlg = true;
@@ -60,5 +61,6 @@ alert("dbSetFlg:"+dbSetFlg);
         else {
           alert(ERROR_MESSAGE);
         }
+*/
     }
 };
