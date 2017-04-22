@@ -222,6 +222,7 @@ var dbSetWait = setInterval(function() {
   if (dbSetFlg) {
 alert("clearInterval");
     clearInterval(dbSetWait);
+alert("clearInterval End");
   }
 }, 500);
 
