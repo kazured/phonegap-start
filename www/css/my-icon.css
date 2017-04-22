@@ -5,3 +5,11 @@
 .ui-icon-twitter:after {
 	background-image: url(../img/twitter.svg);
 }
+
+/* センタリング表示 */
+.center-wrapper{
+  text-align: center;
+}
+.center-wrapper * {
+  margin: 0 auto;
+}
