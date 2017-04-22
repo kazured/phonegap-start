@@ -45,12 +45,11 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         //console.log('Received Event: ' + id);
-        alert('Received Event: ' + id);
+        //alert('Received Event: ' + id);
 
         //startLoading();
         //SQLite設定
         //初期設定
-        alert("test");
         rtn = startDB();
         if (rtn) {
           //infosテーブルからデータを100件取得

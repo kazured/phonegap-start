@@ -77,6 +77,42 @@ var startDB = function() {
     db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
 alert("window.sqlitePlugin.selfTest:" + rtn);
 
+    //placesテーブル作成、データ登録
+    db.executeSql(CREATE_PLACES, [], function(rs1) {
+      // テーブル作成成功
+      // データ取得のSQL実行
+      db.executeSql(SELECT_PLACES, [], function(rs2) {
+        num = rs2.rows.length;
+alert("num:"+num);
+        if (num == 0) {
+          db.transaction(function(tx) {
+            tx.executeSql(INSERT_PLACES, [INSERT_PLACE1]);
+            tx.executeSql(INSERT_PLACES, [INSERT_PLACE2]);
+          }, function(error) {
+            //console.log('Transaction ERROR: ' + error.message);
+            rtn = false;
+          }, function() {
+alert("insert:"+rtn);
+            rtn = true;
+          });
+        }
+      });
+    }, function(error) {
+      rtn = false;
+    });
+alert("places rtn:"+rtn);
+
+    //infosテーブル作成
+    db.executeSql(CREATE_INFOS, [], function(rs1) {
+      rtn = true;
+    }, function(error) {
+      rtn = false;
+    });
+
+alert("infos rtn:"+rtn);
+
+
+/*
     //テーブル作成
     db.transaction(function(tx) {
       //infosテーブル作成
@@ -113,24 +149,9 @@ alert("window.sqlitePlugin.selfTest:" + rtn);
         rtn = false;
       }, function() {
         rtn = true;
-//        /*
-        db.executeSql(SELECT_PLACES, [], function (rs) {
-          var num;
-          var place;
-          for(var x = 0; x < rs.rows.length; x++) {
-            num = rs.rows.item(x).num;
-            place = rs.rows.item(x).place;
-            //places[x] = new ClimbPlace(num,place);
-            alert(places[x].num + "," + places[x].place);
-          }
-        },
-        function (tx, error) {
-          //console.log('SELECT error: ' + error.message);
-          rtn = false;
-        });
-//        */
       });
     }
+    */
   });
 
   return rtn;
