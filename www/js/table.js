@@ -109,7 +109,7 @@ alert("pNum後");
     }
 
     //placeテーブルにデータ設定
-    alert(pNum);
+    alert("pNum:"+pNum);
     if (rtn && pNum == 0) {
       db.transaction(function(tx) {
         tx.executeSql(INSERT_PLACES, [INSERT_PLACE1]);
