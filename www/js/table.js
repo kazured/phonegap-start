@@ -93,8 +93,23 @@ alert("num:"+num);
             rtn = false;
           }, function() {
 alert("insert:"+rtn);
+            places[0] = new ClimbPlace(0,INSERT_PLACE1);
+            places[1] = new ClimbPlace(1,INSERT_PLACE2);
             rtn = true;
           });
+        }
+        else {
+          var places2 = [];
+          for(var x = 0; x < num; x++) {
+            num = rs2.rows.item(x).num;
+            place = rs2.rows.item(x).place;
+
+            var place = new ClimbPlace(num,place);
+            places2[x] = place;
+          }
+          places = null;
+          places = [].concat(places2);
+          rtn = true;
         }
       });
     }, function(error) {
@@ -104,8 +119,30 @@ alert("places rtn:"+rtn);
 
     //infosテーブル作成
     db.executeSql(CREATE_INFOS, [], function(rs1) {
-      rtn = true;
-    }, function(error) {
+        // テーブル作成成功
+        // データ取得のSQL実行
+        db.executeSql(SELECT_INFOS_GET_NEW_100, [], function(rs2) {
+          num = rs2.rows.length;
+alert("infos num:"+num);
+          if (num > 0) {
+            var infos2 = [];
+            for(var x = 0; x < num; x++) {
+                num = rs2.rows.item(x).num;
+                date = rs2.rows.item(x).date;
+                place = rs2.rows.item(x).place;
+                grade = rs2.rows.item(x).grade;
+                memo = rs2.rows.item(x).memo;
+                pic = rs2.rows.item(x).pic;
+
+                var info = new ClimbInfo(num,date,place,grade,memo,pic);
+                infos2[x] = info;
+            }
+            infos = null;
+            infos = [].concat(info2);
+            rtn = true;
+          }
+        });
+      }, function(error) {
       rtn = false;
     });
 
@@ -255,7 +292,7 @@ var getPlaces = function() {
 
         place = new ClimbPlace(num,place);
         place2[x] = place;
-        alert(place.num + "," + place.place);
+alert(place.num + "," + place.place);
       }
     },
     function (tx, error) {

@@ -51,18 +51,6 @@ var app = {
         //SQLite設定
         //初期設定
         rtn = startDB();
-        if (rtn) {
-          //infosテーブルからデータを100件取得
-alert("getInfos");
-          rtn = getInfos();
-          alert("getInfos:" + rtn);
-        }
-        if (rtn) {
-          //placesテーブルから場所を取得
-alert("getPlaces");
-          rtn = getPlaces();
-          alert("getPlaces:" + rtn);
-        }
 
         //stopLoading();
         if (rtn) {
