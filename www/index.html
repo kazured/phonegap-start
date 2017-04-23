@@ -48,7 +48,6 @@
 </head>
 <body>
 <div class="app">
-  <h1>Climb Memo</h1>
   <!--
   <div id="deviceready" class="blink">
     <p class="event listening">Connecting to Device</p>
@@ -373,11 +372,25 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
   <div data-role="footer" data-position="fixed" data-theme="b">
     <div data-role="navbar" data-iconpos="top">
       <ul>
-        <li><button class="ui-btn ui-btn-icon-left ui-icon-edit" id="place_sort">登録</button></li>
+        <li><a href="#place_sort_popup" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-edit ui-btn-icon-left">並び替え</a></li>
       </ul>
     </div>
   </div>
 
+  <div data-role="popup" id="place_sort_popup" data-overlay-theme="a" data-dismissible="false" data-history="false">
+    <div data-role="header" data-theme="a">
+      <h1>場所を並び替え</h1>
+    </div>
+    <div role="main" class="ui-content">
+      <p>場所を並び替えますがよろしいですか？</p>
+      <div data-role="navbar" data-iconpos="top">
+        <ul>
+          <li><a href="#" id="place_sort" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">はい</a></li>
+          <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">キャンセル</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- 場所を削除 -->
@@ -398,7 +411,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
     </div>
   </div>
 
-  <div data-role="popup" id="place_create_popup" data-overlay-theme="a" data-dismissible="false" data-history="false">
+  <div data-role="popup" id="place_delete_popup" data-overlay-theme="a" data-dismissible="false" data-history="false">
     <div data-role="header" data-theme="a">
       <h1>場所を削除</h1>
     </div>
@@ -439,9 +452,39 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
   <div data-role="footer" data-position="fixed" data-theme="a">
     <div data-role="navbar" data-iconpos="top">
       <ul>
-        <li><a href="#" class="ui-btn ui-icon-facebook ui-btn-icon-left ui-btn-inline" id="shareFB">facebook</a></li>
-        <li><button class="ui-btn ui-btn-icon-left ui-icon-edit" id="old_delete">削除</button></li>
+        <li><a href="#info_share_popup" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-facebook ui-btn-icon-left">facebook</a></li>
+        <li><a href="#info_delete_popup" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-delete ui-btn-icon-left">削除</a></li>
       </ul>
+    </div>
+  </div>
+
+  <div data-role="popup" id="info_share_popup" data-overlay-theme="a" data-dismissible="false" data-history="false">
+    <div data-role="header" data-theme="a">
+      <h1>facebookに投稿</h1>
+    </div>
+    <div role="main" class="ui-content">
+      <p>メモをfacebookに投稿しますがよろしいですか？</p>
+      <div data-role="navbar" data-iconpos="top">
+        <ul>
+          <li><a href="#" id="shareFB" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">はい</a></li>
+          <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">キャンセル</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div data-role="popup" id="info_delete_popup" data-overlay-theme="a" data-dismissible="false" data-history="false">
+    <div data-role="header" data-theme="a">
+      <h1>メモを削除</h1>
+    </div>
+    <div role="main" class="ui-content">
+      <p>メモを削除しますがよろしいですか？</p>
+      <div data-role="navbar" data-iconpos="top">
+        <ul>
+          <li><a href="#" id="old_delete" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">はい</a></li>
+          <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">キャンセル</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 

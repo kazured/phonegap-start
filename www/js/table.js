@@ -284,22 +284,25 @@ var deleteInfos = function(num) {
   db.transaction(function (tx) {
     tx.executeSql(DELETE_INFOS_WHERE_NUM, [num], function (tx, res) {
       //console.log("DELETE success ");
+      //infosから削除
+      deleteInfoFromArray(num);
+
+      //最新のメモをリスト設定
+      setNewInfo(infos);
+
+      //過去のメモをリスト設定
+      setInfoList("#infoList2",infos);
     },
     function (tx, error) {
       //console.log('DELETE error: ' + error.message);
+      //エラー画面に移動
+      $('body').pagecontainer('change', '#error');
     });
   }, function (error) {
     //console.log('transaction error: ' + error.message);
+    //エラー画面に移動
+    $('body').pagecontainer('change', '#error');
   }, function () {
-    //infosから削除
-    deleteInfoFromArray(num);
-
-    //最新のメモをリスト設定
-    setNewInfo(infos);
-
-    //過去のメモをリスト設定
-    setInfoList("#infoList2",infos);
-
     //ホーム画面に移動
     $('body').pagecontainer('change', '#home');
   });
@@ -350,23 +353,29 @@ var deletePlace = function(place) {
   db.transaction(function (tx) {
     tx.executeSql(DELETE_PLACES_WHERE_PLACE, [place], function (tx, res) {
       //console.log("DELETE success ");
+      //placesから削除
+      deletePlaceFromArray(place);
+
+      //登った場所のセレクトボックス設定
+      setPlaceSelectBox('#new_climb_place');
+
+      //登った場所のリスト設定
+      setPlaceList();
+
+      //登った場所のラジオボタン設定
+      setPlaceRadio();
     },
     function (tx, error) {
       //console.log('DELETE error: ' + error.message);
+      //エラー画面に移動
+      $('body').pagecontainer('change', '#error');
     });
   }, function (error) {
     //console.log('transaction error: ' + error.message);
+	//エラー画面に移動
+	$('body').pagecontainer('change', '#error');
   }, function () {
-    //placesから削除
-    deletePlaceFromArray(place);
-
-    //登った場所のセレクトボックス設定
-    setPlaceSelectBox('#new_climb_place');
-
-    //登った場所のリスト設定
-    setPlaceList();
-
-    //登った場所のラジオボタン設定
-    setPlaceRadio();
+    //ホーム画面に移動
+    $('body').pagecontainer('change', '#home');
   });
 };
