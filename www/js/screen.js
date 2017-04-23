@@ -144,13 +144,6 @@ var setNewInfo = function(infos) {
 
   $("#infoList1 li:last").remove();
 
-  //最新の情報の設定場所を取得
-  /*
-  var li = $("#infoList1 li:last");
-  var h2 = li.find("h2");
-  var p = li.find("p");
-  */
-
   var li = $('<li>');
   var img = $('<img>');
   var h2 = $('<h2>');
@@ -222,12 +215,11 @@ var setPlaceRadio = function() {
 /**
  * 登った場所を配列から削除
  */
-var deletePlaceFromArray = function() {
+var deletePlaceFromArray = function(place) {
   if (places != null && places.length > 0) {
-    var value = $('input[name=placeRadio]:checked').val();
     var i;
     $.each(places, function (index, elem) {
-      if (value == elem.place) {
+      if (place == elem.place) {
         i = index;
       }
     });
@@ -236,16 +228,19 @@ var deletePlaceFromArray = function() {
 };
 
 /**
- * DB初期設定のWait処理
+ * 情報を配列から削除
  */
-var dbSetWait = setInterval(function() {
-  //終了条件
-  if (dbSetFlg) {
-alert("clearInterval");
-    clearInterval(dbSetWait);
-alert("clearInterval End");
+var deleteInfoFromArray = function(num) {
+  if (infos != null && infos.length > 0) {
+    var i;
+    $.each(infos, function (index, elem) {
+      if (num == elem.num) {
+        i = index;
+      }
+    });
+    infos.splice(i, 1);
   }
-}, 500);
+};
 
 /**
  * テストデータを設定する
@@ -272,8 +267,6 @@ var setTestData = function() {
 $(document).on('change', '#new_climb_pic', function() {
   var file = this.files[0];
   var name = file.name;
-alert(name);
-alert(name.match(/.gif$|.png$|.jpg$|.jpeg$/));
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
     alert("画像ファイルを指定してください");
     $('#new_climb_img').attr('src', '');
@@ -320,7 +313,7 @@ $(document).on('click', '#info_create', function() {
   var place = $("#new_climb_place").val();
   var grade = $("#new_climb_grade").val();
   var memo = $("#new_climb_memo").val();
-  var pic = $("#new_climb_pic").val();
+  var pic = $("#new_climb_img").prop('src');
 
   if (date == "" && memo == "") {
     alert("写真以外は入力してください");
@@ -339,114 +332,41 @@ $(document).on('click', '#place_create', function() {
   var place = $("#new_climb_place_name").val();
 
   if (place != "") {
-    //ローディング開始
-    startLoading();
+    //データ処理画面に移動
+    $('body').pagecontainer('change', '#start');
 
     //placesテーブルに登録
-    var num = 0;
-    num = insertPlace(place);
-
-    //ローディング終了
-    stopLoading();
-
-    if (num != -1) {
-      //placesの末尾に追加
-      var climbPlace = new ClimbPlace(num,place);
-      places.push(climbPlace);
-
-      //登った場所のセレクトボックス設定
-      setPlaceSelectBox('#new_climb_place');
-
-      //登った場所のリスト設定
-      setPlaceList();
-
-      //登った場所のラジオボタン設定
-      setPlaceRadio();
-
-      //ホーム画面に移動
-      $('body').pagecontainer('change', '#home');
-    }
-    else {
-      alert(ERROR_MESSAGE);
-    }
-
+    insertPlace(place);
+  }
+  else {
+    alert("場所を入力してください");
   }
 });
 
 //場所の並び替え
 $(document).on('click', '#place_sort', function() {
   if (places != null && places.length > 1) {
-    //ローディング開始
-    startLoading();
+    //データ処理画面に移動
+    $('body').pagecontainer('change', '#start');
 
-    //placeテーブル削除
-    rtn = false;
-    rtn = deletePlaces();
+    //placesを念のためコピー
+    places_old = null;
+    places_old = [].concat(places);
 
-    //placeテーブル、セレクトボックスの設定
-    if (rtn) {
-      //配列placesの再設定
-      sortPlaceArray();
+    //配列placesの再設定
+    sortPlaceArray();
 
-      //セレクトボックスの再設定
-      setPlaceSelectBox('#new_climb_place');
-
-      //placesテーブルの再設定
-      for (var i = 0; i < places.length; i++) {
-        rtn = insertPlace(places[i].place);
-        if (!rtn) {
-          break;
-        }
-      }
-    }
-
-    //ローディング終了
-    stopLoading();
-
-    if (!rtn) {
-      alert(ERROR_MESSAGE);
-    }
+    //placeテーブル再設定
+    sortPlaces();
   }
 });
 
 //場所の削除をクリック
 $(document).on('click', '#place_delete', function() {
   if (places != null && places.length > 1) {
-    //ローディング開始
-    startLoading();
-
     //placesテーブル削除
-    rtn = false;
-    rtn = deletePlaces();
-
-    if (rtn) {
-      //placesから削除
-      deletePlaceFromArray();
-
-      //登った場所のセレクトボックス設定
-      setPlaceSelectBox('#new_climb_place');
-
-      //登った場所のリスト設定
-      setPlaceList();
-
-      //登った場所のラジオボタン設定
-      setPlaceRadio();
-
-      //placesテーブルの再設定
-      for (var i = 0; i < places.length; i++) {
-        rtn = insertPlace(places[i].place);
-        if (!rtn) {
-          break;
-        }
-      }
-    }
-
-    //ローディング終了
-    stopLoading();
-
-    if (!rtn) {
-      alert(ERROR_MESSAGE);
-    }
+    var place = $('input[name=placeRadio]:checked').val();
+    deletePlace(place);
   }
   else {
     alert("場所が２件以上なければ削除できません");
@@ -460,25 +380,11 @@ $(document).on('click', '#climb_calendar_search', function() {
     alert("日付を入力してください")
   }
   else {
-    //ローディング開始
-    startLoading();
+    //データ処理画面に移動
+    $('body').pagecontainer('change', '#start');
 
-    rtn = false;
     //infosテーブルを探す
-    rtn = getInfosOnDate(day_text);
-    if (rtn) {
-      //リストに設定
-      if (infosOnDate != null && infosOnDate.length > 0) {
-        setInfoList('#infoList3',infosOnDate);
-      }
-    }
-
-    //ローディング終了
-    stopLoading();
-
-    if (!rtn) {
-      alert(ERROR_MESSAGE);
-    }
+    getInfosOnDate(day_text);
   }
 });
 
@@ -541,10 +447,18 @@ $(document).on('click', '#infoList2 li', function() {
   $('body').pagecontainer('change', '#climb_old_memo');
 });
 
+//メモの削除をクリック
 $(document).on('click', '#old_delete', function() {
   //infos[]のindexを取得
   var index = $('#climb_old_memo').data('index');
-  alert("index:" + index);
+
+  if (index >= 0) {
+    //データ処理画面に移動
+    $('body').pagecontainer('change', '#start');
+
+    //alert("index:" + index);
+    deleteInfo(place);
+  }
 });
 
 //facebookでシェア

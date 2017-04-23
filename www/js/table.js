@@ -1,5 +1,3 @@
-
-
 /**
  * @classdesc 登った情報を取り扱うクラス
  * @constructor
@@ -47,6 +45,7 @@ var infosOnDate = [];
 * @type {Array}
 */
 var places = [];
+var places_old = [];
 
 //DDL
 var CREATE_INFOS = "create table if not exists infos(num integer primary key autoincrement, date text,place text,grade text,memo text,pic text)";
@@ -64,6 +63,7 @@ var INSERT_PLACE2 = "その他";
 
 var DELETE_INFOS_WHERE_NUM = "delete from infos where num = ?";
 var DELETE_PLACES = "delete from places";
+var DELETE_PLACES_WHERE_PLACE = "delete from places where place = ?";
 
 /**
  * SQLite初期設定
@@ -156,53 +156,10 @@ var startDB = function() {
 };
 
 /**
- * infosテーブルから100件のデータを取得する
- * @return {boolean} 処理が成功したらtrue、失敗したらfalseを返す
- */
-var getInfos = function() {
-  var rtn;
-  var infos2 = [];
-  var num,date,place,grade,memo,pic;
-  db.transaction(function (tx) {
-    tx.executeSql(SELECT_INFOS_GET_NEW_100, [], function (tx, resultSet) {
-      for(var x = 0; x < resultSet.rows.length; x++) {
-        num = resultSet.rows.item(x).num;
-        date = resultSet.rows.item(x).date;
-        place = resultSet.rows.item(x).place;
-        grade = resultSet.rows.item(x).grade;
-        memo = resultSet.rows.item(x).memo;
-        pic = resultSet.rows.item(x).pic;
-
-        var info = new ClimbInfo(num,date,place,grade,memo,pic);
-        infos2[x] = info;
-      }
-    },
-    function (tx, error) {
-      //console.log('SELECT error: ' + error.message);
-      rtn = false;
-    });
-  }, function (error) {
-    //console.log('transaction error: ' + error.message);
-    rtn = false;
-  }, function () {
-    //console.log('transaction ok');
-    if (infos2.length > 0) {
-      infos = null;
-      infos = [].concat(infos2);
-    }
-    rtn = true;
-  });
-
-  return rtn;
-};
-
-/**
  * infosテーブルから特定の日付のデータを取得する
- * @return {boolean} 処理が成功したらtrue、失敗したらfalseを返す
  */
 
 var getInfosOnDate = function(searchDate) {
-  var rtn;
   var infos2 = [];
   var num,date,place,grade,memo,pic;
   db.transaction(function (tx) {
@@ -221,83 +178,65 @@ var getInfosOnDate = function(searchDate) {
     },
     function (tx, error) {
       //console.log('SELECT error: ' + error.message);
-      rtn = false;
     });
   }, function (error) {
     //console.log('transaction error: ' + error.message);
-    rtn = false;
   }, function () {
     //console.log('transaction ok');
     infosOnDate = null;
     infosOnDate = [].concat(infos2);
-    rtn = true;
-  });
 
-  return rtn;
+    if (infosOnDate != null && infosOnDate.length > 0) {
+      setInfoList('#infoList3',infosOnDate);
+    }
+
+    //#climb_calendar_searchに移動
+    $('body').pagecontainer('change', '#climb_calendar_search');
+  });
 };
 
 /**
- * placesテーブルからデータを取得する
- * @return {boolean} 処理が成功したらtrue、失敗したらfalseを返す
+ * placesテーブルのレコードをソート後のレコードに書き換える
  */
-
-var getPlaces = function() {
-  var rtn;
-  var places2 = [];
-  var num,place;
+var sortPlaces = function() {
   db.transaction(function (tx) {
-    tx.executeSql(SELECT_PLACES, [], function (tx, resultSet) {
-      for(var x = 0; x < resultSet.rows.length; x++) {
-        num = resultSet.rows.item(x).num;
-        place = resultSet.rows.item(x).place;
-
-        place = new ClimbPlace(num,place);
-        place2[x] = place;
-alert(place.num + "," + place.place);
+    tx.executeSql(DELETE_PLACES, [], function(tx, res) {
+    },
+    function(tx, error) {
+      //console.log('INSERT error: ' + error.message);
+      //エラー画面に移動
+      $('body').pagecontainer('change', '#error');
+    });
+  }, function(error) {
+    //console.log('transaction error: ' + error.message);
+    //エラー画面に移動
+    $('body').pagecontainer('change', '#error');
+  }, function() {
+    db.transaction(function(tx2) {
+      for (var x = 0; x < places.length; x++) {
+        tx2.executeSql(INSERT_PLACES, [places[x]]);
+        places[x].num = x;
       }
-    },
-    function (tx, error) {
-      //console.log('SELECT error: ' + error.message);
-      rtn = false;
-    });
-  }, function (error) {
-    //console.log('transaction error: ' + error.message);
-    rtn = false;
-  }, function () {
-    //console.log('transaction ok');
-    places = null;
-    places = [].concat(places2);
-    rtn = true;
-  });
+    }, function(error) {
+      //console.log('Transaction ERROR: ' + error.message);
+      places = null;
+      places = [].concat(places_old);
+      //エラー画面に移動
+      $('body').pagecontainer('change', '#error');
+      //rtn = false;
+    }, function() {
+      //rtn = true;
+      //最新のメモをリスト設定
+      setNewInfo(infos);
 
-  return rtn;
+      //過去のメモをリスト設定
+      setInfoList("#infoList2",infos);
+
+      //ホーム画面に移動
+      $('body').pagecontainer('change', '#home');
+    });
+  });
 };
-
-/**
- * placesテーブルからデータを削除する
- * @return {boolean} 処理が成功したらtrue、失敗したらfalseを返す
- */
-var deletePlaces = function() {
-  var rtn;
-  db.transaction(function (tx) {
-    tx.executeSql(query, [], function (tx, res) {
-      //console.log("DELETE success ");
-      rtn = true;
-    },
-    function (tx, error) {
-      //console.log('DELETE error: ' + error.message);
-      rtn = false;
-    });
-  }, function (error) {
-    //console.log('transaction error: ' + error.message);
-    rtn = false;
-  }, function () {
-    //console.log('transaction ok');
-    rtn = true;
-  });
-
-  return rtn;
- };
 
 /**
  * infosテーブルにメモを登録する
@@ -315,12 +254,16 @@ var insertInfo = function(date,place,grade,memo,pic) {
     });
   }, function(error) {
     //console.log('transaction error: ' + error.message);
-    num = -1;
+    //エラー画面に移動
+    $('body').pagecontainer('change', '#error');
   }, function() {
     //console.log('transaction ok');
     //infosの先頭に追加
     var climbInfo = new ClimbInfo(num,date,place,grade,memo,pic);
     infos.unshift(climbInfo);
+    if (infos.length == 101) {
+      infos.pop();
+    }
 
     //最新のメモをリスト設定
     setNewInfo(infos);
@@ -335,8 +278,35 @@ var insertInfo = function(date,place,grade,memo,pic) {
 };
 
 /**
+ * infosテーブルから１件削除する
+ */
+var deleteInfos = function(num) {
+  db.transaction(function (tx) {
+    tx.executeSql(DELETE_INFOS_WHERE_NUM, [num], function (tx, res) {
+      //console.log("DELETE success ");
+    },
+    function (tx, error) {
+      //console.log('DELETE error: ' + error.message);
+    });
+  }, function (error) {
+    //console.log('transaction error: ' + error.message);
+  }, function () {
+    //infosから削除
+    deleteInfoFromArray(num);
+
+    //最新のメモをリスト設定
+    setNewInfo(infos);
+
+    //過去のメモをリスト設定
+    setInfoList("#infoList2",infos);
+
+    //ホーム画面に移動
+    $('body').pagecontainer('change', '#home');
+  });
+};
+
+/**
  * placesテーブルに場所を登録する
- * @return {INTEGER} 処理が成功したら追加されたレコードの番号(num?)、失敗したら-1を返す
  */
 var insertPlace = function(place) {
   var num;
@@ -351,10 +321,52 @@ var insertPlace = function(place) {
     });
   }, function(error) {
     //console.log('transaction error: ' + error.message);
-    num = -1;
+    //エラー画面に移動
+    $('body').pagecontainer('change', '#error');
   }, function() {
     //console.log('transaction ok');
-  });
+    //infosの先頭に追加
+    var climbPlace = new ClimbPlace(num,place);
+    places.unshift(climbPlace);
 
-  return num;
+    //登った場所のリスト設定
+    setPlaceList("#sortPlaceList");
+
+    //登った場所のセレクトボックス設定
+    setPlaceSelectBox('#new_climb_place');
+
+    //登った場所のラジオボタン設定
+    setPlaceRadio();
+
+    //ホーム画面に移動
+    $('body').pagecontainer('change', '#home');
+  });
+};
+
+/**
+ * placesテーブルから１件削除する
+ */
+var deletePlace = function(place) {
+  db.transaction(function (tx) {
+    tx.executeSql(DELETE_PLACES_WHERE_PLACE, [place], function (tx, res) {
+      //console.log("DELETE success ");
+    },
+    function (tx, error) {
+      //console.log('DELETE error: ' + error.message);
+    });
+  }, function (error) {
+    //console.log('transaction error: ' + error.message);
+  }, function () {
+    //placesから削除
+    deletePlaceFromArray(place);
+
+    //登った場所のセレクトボックス設定
+    setPlaceSelectBox('#new_climb_place');
+
+    //登った場所のリスト設定
+    setPlaceList();
+
+    //登った場所のラジオボタン設定
+    setPlaceRadio();
+  });
 };

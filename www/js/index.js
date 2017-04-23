@@ -37,6 +37,7 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
+        /*
         var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
@@ -46,21 +47,9 @@ var app = {
 
         //console.log('Received Event: ' + id);
         //alert('Received Event: ' + id);
+        */
 
-        //startLoading();
         //SQLite設定
-        //初期設定
-        //rtn = startDB();
         startDB();
-/*
-        //stopLoading();
-        if (rtn) {
-          dbSetFlg = true;
-alert("dbSetFlg:"+dbSetFlg);
-        }
-        else {
-          alert(ERROR_MESSAGE);
-        }
-*/
     }
 };
