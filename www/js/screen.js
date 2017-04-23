@@ -268,7 +268,7 @@ $(document).on('change', '#new_climb_pic', function() {
   var file = this.files[0];
   var name = file.name;
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
-    alert("画像ファイルを指定してください");
+    //alert("画像ファイルを指定してください");
     $('#new_climb_img').attr('src', '');
   }
   else {
@@ -304,8 +304,21 @@ function onSuccess(imageData) {
  * カメラ撮影が失敗した場合に、エラーメッセージを表示する
  */
 function onFail(message) {
-  alert(ERROR_MESSAGE);
+  //alert(ERROR_MESSAGE);
 }
+
+//メモの登録を事前チェック
+$(document).on('click', '#info_create_check', function() {
+  var date = $("#new_climb_day").val();
+  var memo = $("#new_climb_memo").val();
+
+  if (date != "" && memo != "") {
+    $('#info_create_popup').popup("open");
+  }
+  else {
+    $('#info_create_alert').popup("open");
+  }
+});
 
 //メモの登録ボタンをクリック
 $(document).on('click', '#info_create', function() {
@@ -315,15 +328,22 @@ $(document).on('click', '#info_create', function() {
   var memo = $("#new_climb_memo").val();
   var pic = $("#new_climb_img").prop('src');
 
-  if (date == "" && memo == "") {
-    alert("写真以外は入力してください");
+  //データ処理画面に移動
+  $('body').pagecontainer('change', '#start');
+
+  //infosテーブルに登録
+  insertInfo(date,place,grade,memo,pic);
+});
+
+//場所の登録を事前チェック
+$(document).on('click', '#place_create_check', function() {
+  var place = $("#new_climb_place_name").val();
+
+  if (place != "") {
+    $('#place_create_popup').popup("open");
   }
   else {
-    //データ処理画面に移動
-    $('body').pagecontainer('change', '#start');
-
-    //infosテーブルに登録
-    insertInfo(date,place,grade,memo,pic);
+    $('#place_create_alert').popup("open");
   }
 });
 
@@ -331,16 +351,11 @@ $(document).on('click', '#info_create', function() {
 $(document).on('click', '#place_create', function() {
   var place = $("#new_climb_place_name").val();
 
-  if (place != "") {
-    //データ処理画面に移動
-    $('body').pagecontainer('change', '#start');
+  //データ処理画面に移動
+  $('body').pagecontainer('change', '#start');
 
-    //placesテーブルに登録
-    insertPlace(place);
-  }
-  else {
-    alert("場所を入力してください");
-  }
+  //placesテーブルに登録
+  insertPlace(place);
 });
 
 //場所の並び替え
@@ -361,31 +376,47 @@ $(document).on('click', '#place_sort', function() {
   }
 });
 
-//場所の削除をクリック
-$(document).on('click', '#place_delete', function() {
+
+//場所の削除を事前チェック
+$(document).on('click', '#place_delete_check', function() {
   if (places != null && places.length > 1) {
-    //placesテーブル削除
-    var place = $('input[name=placeRadio]:checked').val();
-    deletePlace(place);
+    $('#place_delete_popup').popup("open");
   }
   else {
-    alert("場所が２件以上なければ削除できません");
+    $('#place_delete_alert').popup("open");
+  }
+
+});
+
+//場所の削除をクリック
+$(document).on('click', '#place_delete', function() {
+  //placesテーブル削除
+  var place = $('input[name=placeRadio]:checked').val();
+
+  //データ処理画面に移動
+  $('body').pagecontainer('change', '#start');
+
+  deletePlace(place);
+});
+
+//カレンダーで探すを事前チェック
+$(document).on('click', '#climb_calendar_check', function() {
+  var day_text = $('#old_climb_day2').val();
+  if (day_text != "") {
+    $('#climb_calendar_popup').popup("open");
+  }
+  else {
+    $('#climb_calendar_alert').popup("open");
   }
 });
 
 //カレンダーで探す
 $(document).on('click', '#climb_calendar_search', function() {
-  var day_text = $('#old_climb_day2').val();
-  if (day_text == "") {
-    alert("日付を入力してください")
-  }
-  else {
-    //データ処理画面に移動
-    $('body').pagecontainer('change', '#start');
+  //データ処理画面に移動
+  $('body').pagecontainer('change', '#start');
 
-    //infosテーブルを探す
-    getInfosOnDate(day_text);
-  }
+  //infosテーブルを探す
+  getInfosOnDate(day_text);
 });
 
 //#homeで最近のメモが押された場合
