@@ -573,32 +573,28 @@ $(document).on('click', '#climb_new_place_link', function() {
   $("#new_climb_place_name").val("");
 });
 
-//facebookでシェア
-$(document).on('click', '#shareFB', function() {
-    var index = $('#climb_old_memo').data('index');
-    var data = infos[index].pic;
-    var filename = "Climbing Memo";
-    var message = infos[index].memo;
-    var name = infos[index].date + "@" + infos[index].place;
-    var description = "グレード : " + infos[index].grade;
+//SNSに投稿
+$(document).on('click', '#share_memo', function() {
+  var index = $('#climb_old_memo').data('index');
+  var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade
+  var pic = infos[index].pic;
 
-    try {
-        blob = dataURItoBlob(data);
-    } catch (e) {
-        console.log(e);
-    }
-    FB.getLoginStatus(function (response) {
-        console.log(response);
-        if (response.status === "connected") {
-            postImageToFacebook(response.authResponse.accessToken, filename, "image/png", blob, message,name,description);
-        } else if (response.status === "not_authorized") {
-            FB.login(function (response) {
-                postImageToFacebook(response.authResponse.accessToken, filename, "image/png", blob, window.location.href);
-            }, {scope: "publish_actions"});
-        } else {
-            FB.login(function (response) {
-                postImageToFacebook(response.authResponse.accessToken, filename, "image/png", blob,  window.location.href);
-            }, {scope: "publish_actions"});
-        }
-    });
+  var options = {
+    message: msg, // not supported on some apps (Facebook, Instagram)
+    subject: null, // fi. for email
+    files: pic, // an array of filenames either locally or remotely
+    url: null,
+    chooserTitle: null // Android only, you can override the default share sheet title
+  }
+
+  window.plugins.socialsharing.shareWithOptions(options, onShareSuccess, onShareError);
 });
+
+var onShareSuccess = function(result) {
+  console.log("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
+  console.log("Shared to app: " + result.app); // On Android result.app is currently empty. On iOS it's empty when sharing is cancelled (result.completed=false)
+};
+
+var onShareError = function(msg) {
+  console.log("Sharing failed with message: " + msg);
+};
