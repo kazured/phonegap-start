@@ -72,7 +72,7 @@
     <plugin spec="https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free" source="git" />
 
 
-    <gap:plugin name="com.phonegap.plugins.facebookconnect" version="0.12.0">
+    <gap:plugin name="com.phonegap.plugins.facebookconnect" version="0.11.0">
         <param name="APP_ID" value="453277388352701" />
         <param name="APP_NAME" value="Climb Memo" />
     </gap:plugin>
