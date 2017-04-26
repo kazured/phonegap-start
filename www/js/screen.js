@@ -270,6 +270,7 @@ $(document).on('change', '#new_climb_pic', function() {
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
     //alert("画像ファイルを指定してください");
     $('#new_climb_img').attr('src', '');
+    $('#new_climb_img').attr('alt', '');
   }
   else {
     //ファイルを読み込むFileReaderオブジェクト
@@ -280,6 +281,7 @@ $(document).on('change', '#new_climb_pic', function() {
       // 読み込んだデータをimgに設定
       $('#new_climb_img').attr('src', event.target.result);
     };
+    $('#new_climb_img').attr('alt', name);
 
     //画像読み込み
     fileReader.readAsDataURL(file);
@@ -327,6 +329,7 @@ $(document).on('click', '#info_create', function() {
   var grade = $("#new_climb_grade").val();
   var memo = $("#new_climb_memo").val();
   var pic = $("#new_climb_img").prop('src');
+  var path = $("#new_climb_img").prop('alt');
 
   //データ処理画面に移動
   $('body').pagecontainer('change', '#start');
@@ -478,6 +481,59 @@ $(document).on('click', '#infoList2 li', function() {
   $('body').pagecontainer('change', '#climb_old_memo');
 });
 
+//メモの更新をクリック
+$(document).on('click', '#update_memo', function() {
+  var index = $('#climb_old_memo').data('index');
+
+  //画面に情報を設定
+  $("#update_climb_day").val(infos[index].date);
+  //先頭の要素を選択状態にする
+  $('#update_climb_place').val(infos[index].place);
+  // 表示を更新する
+  $('#update_climb_place').selectmenu();
+  $('#update_climb_place').selectmenu('refresh',true);
+  //先頭の要素を選択状態にする
+  $('#update_climb_grade').val(infos[index].grade);
+  // 表示を更新する
+  $('#update_climb_grade').selectmenu();
+  $('#update_climb_grade').selectmenu('refresh',true);
+  $("#update_climb_memo").val(infos[index].memo);
+  //$("#new_climb_pic").val(infos[index].path);
+  $("#update_climb_img").attr('src',infos[index].pic);
+  $("#update_climb_img").attr('alt',infos[index].path);
+
+  $('body').pagecontainer('change', '#climb_update_memo');
+});
+
+//メモの更新を事前チェック
+$(document).on('click', '#info_update_check', function() {
+  var date = $("#update_climb_day").val();
+  var memo = $("#update_climb_memo").val();
+
+  if (date != "" && memo != "") {
+    $('#info_update_popup').popup("open");
+  }
+  else {
+    $('#info_update_alert').popup("open");
+  }
+});
+
+//メモの登録ボタンをクリック
+$(document).on('click', '#info_create', function() {
+  var date = $("#new_climb_day").val();
+  var place = $("#new_climb_place").val();
+  var grade = $("#new_climb_grade").val();
+  var memo = $("#new_climb_memo").val();
+  var pic = $("#new_climb_img").prop('src');
+  var path = $("#new_climb_img").prop('alt');
+
+  //データ処理画面に移動
+  $('body').pagecontainer('change', '#start');
+
+  //infosテーブルに登録
+  insertInfo(date,place,grade,memo,pic);
+});
+
 //メモの削除をクリック
 $(document).on('click', '#old_delete', function() {
   //infos[]のindexを取得
@@ -490,6 +546,31 @@ $(document).on('click', '#old_delete', function() {
     //alert("index:" + index);
     deleteInfo(place);
   }
+});
+
+//メモ登録画面の初期化
+$(document).on('click', '#climb_new_memo_link', function() {
+  $("#new_climb_day").val("");
+  //先頭の要素を選択状態にする
+  $('#new_climb_place').val(places[0]);
+  // 表示を更新する
+  $('#new_climb_place').selectmenu();
+  $('#new_climb_place').selectmenu('refresh',true);
+  //先頭の要素を選択状態にする
+  $('#new_climb_grade').val("10級");
+  // 表示を更新する
+  $('#new_climb_grade').selectmenu();
+  $('#new_climb_grade').selectmenu('refresh',true);
+  $("#new_climb_memo").val("");
+  $("#new_climb_pic").val("");
+  $("#new_climb_img").attr('src',"");
+  $("#new_climb_img").attr('alt',"");
+
+});
+
+//場所登録画面の初期化
+$(document).on('click', '#climb_new_place_link', function() {
+  $("#new_climb_place_name").val("");
 });
 
 //facebookでシェア
