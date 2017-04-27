@@ -69,7 +69,6 @@ var setPlaceList = function(idName) {
       li.wrapInner("<a href=\"#\"></a>")
       lis.push(li);
     });
-    //    <li data-value="a"><a href="#">ベースキャンプ</a></li>
 
     placeList.append(lis);
     placeList.listview();
@@ -128,7 +127,6 @@ var setInfoList = function(id,infos) {
       li.wrapInner("<a href=\"#\"></a>")
       lis.push(li);
     });
-    //    <li data-value="a"><a href="#">ベースキャンプ</a></li>
 
     infoList.append(lis);
     infoList.listview();
@@ -185,7 +183,6 @@ var setPlaceRadio = function() {
     var div = $('#placeDeleteRadio');
 
     //既存のfiledsetを削除
-    //$('#placeDeleteRadio fieldset').remove();
     div.find('fieldset').remove();
 
     var fset = '<fieldset data-role="controlgroup" data-theme="b"><legend>削除する場所を選んでください</legend>';
@@ -263,12 +260,10 @@ var setTestData = function() {
 };
 
 //メモ新規登録画面の画像ファイル読み込み
-//$('#new_climb_pic').on("change", function() {
 $(document).on('change', '#new_climb_pic', function() {
   var file = this.files[0];
   var name = file.name;
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
-    //alert("画像ファイルを指定してください");
     $('#new_climb_img').attr('src', '');
     $('#new_climb_img').attr('alt', '');
   }
@@ -306,7 +301,7 @@ function onSuccess(imageData) {
  * カメラ撮影が失敗した場合に、エラーメッセージを表示する
  */
 function onFail(message) {
-  //alert(ERROR_MESSAGE);
+  console.log(ERROR_MESSAGE);
 }
 
 //メモの登録を事前チェック
@@ -329,7 +324,6 @@ $(document).on('click', '#info_create', function() {
   var grade = $("#new_climb_grade").val();
   var memo = $("#new_climb_memo").val();
   var pic = $("#new_climb_img").prop('src');
-  var path = $("#new_climb_img").prop('alt');
 
   //データ処理画面に移動
   $('body').pagecontainer('change', '#start');
@@ -498,9 +492,7 @@ $(document).on('click', '#update_memo', function() {
   $('#update_climb_grade').selectmenu();
   $('#update_climb_grade').selectmenu('refresh',true);
   $("#update_climb_memo").val(infos[index].memo);
-  //$("#new_climb_pic").val(infos[index].path);
   $("#update_climb_img").attr('src',infos[index].pic);
-  $("#update_climb_img").attr('alt',infos[index].path);
 
   $('body').pagecontainer('change', '#climb_update_memo');
 });
@@ -525,7 +517,6 @@ $(document).on('click', '#info_create', function() {
   var grade = $("#new_climb_grade").val();
   var memo = $("#new_climb_memo").val();
   var pic = $("#new_climb_img").prop('src');
-  var path = $("#new_climb_img").prop('alt');
 
   //データ処理画面に移動
   $('body').pagecontainer('change', '#start');
@@ -564,7 +555,6 @@ $(document).on('click', '#climb_new_memo_link', function() {
   $("#new_climb_memo").val("");
   $("#new_climb_pic").val("");
   $("#new_climb_img").attr('src',"");
-  $("#new_climb_img").attr('alt',"");
 
 });
 
@@ -578,6 +568,10 @@ $(document).on('click', '#share_memo', function() {
   var index = $('#climb_old_memo').data('index');
   var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade
   var pic = infos[index].pic;
+
+  if (pic == '') {
+    pic = null;
+  }
 
   var options = {
     message: msg, // not supported on some apps (Facebook, Instagram)
