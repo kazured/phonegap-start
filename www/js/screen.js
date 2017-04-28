@@ -480,31 +480,42 @@ $(document).on('click', '#infoList2 li', function() {
 //#climb_calendarでリストが押された場合
 $(document).on('click', '#infoList3 li', function() {
   //どのliが押されたか
-  var index = $("#infoList3 li").index(this);
+  var infosOnDateIndex = $("#infoList3 li").index(this);
+  var info = infosOnDate(infosOnDateIndex);
+  var index = 0;
 
-  //infos[]のindexを保存
-  $('#climb_old_memo').data('index',index);
+  if (info.date != '0件です') {
+    for ( var x = 0; x < infos.length; x++) {
+      if (infos[x].num == info.num) {
+        index = infos[x].num;
+        break;
+      }
+    }
 
-  //画面に情報を設定
-  //登った日
-  $("#old_climb_day").text(infos[index].date);
+    //infos[]のindexを保存
+    $('#climb_old_memo').data('index',index);
 
-  //登った場所
-  $("#old_climb_place").text(infos[index].place);
+    //画面に情報を設定
+    //登った日
+    $("#old_climb_day").text(info.date);
 
-  //グレード
-  $("#old_climb_grade").text(infos[index].grade);
+    //登った場所
+    $("#old_climb_place").text(info.place);
 
-  //メモ
-  $("#old_climb_memo").text(infos[index].memo);
+    //グレード
+    $("#old_climb_grade").text(info.grade);
 
-  //写真
-  $("#old_climb_img").attr('src',infos[index].pic);
+    //メモ
+    $("#old_climb_memo").text(info.memo);
 
-  //戻るリンク
-  $("#old_climb_return").attr('href','#climb_calendar');
+    //写真
+    $("#old_climb_img").attr('src',info.pic);
 
-  $('body').pagecontainer('change', '#climb_old_memo');
+    //戻るリンク
+    $("#old_climb_return").attr('href','#climb_calendar');
+
+    $('body').pagecontainer('change', '#climb_old_memo');
+  }
 });
 
 //メモの更新をクリック

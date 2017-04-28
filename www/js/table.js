@@ -198,7 +198,8 @@ var getInfosOnDate = function(searchDate) {
     }
     else {
       infosOnDate = [];
-      infosOnDate[0] = [new ClimbInfo(0,'0件です','','','','')];
+      info = new ClimbInfo(0,'0件です','','','','');
+      infosOnDate[0] = info;
       setInfoList('#infoList3',infosOnDate);
     }
 
