@@ -481,7 +481,7 @@ $(document).on('click', '#infoList2 li', function() {
 $(document).on('click', '#infoList3 li', function() {
   //どのliが押されたか
   var infosOnDateIndex = $("#infoList3 li").index(this);
-  var info = infosOnDate(infosOnDateIndex);
+  var info = infosOnDate[infosOnDateIndex];
   var index = 0;
 
   if (info.date != '0件です') {
