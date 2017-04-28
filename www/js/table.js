@@ -68,6 +68,17 @@ var DELETE_PLACES_WHERE_PLACE = "delete from places where place = ?";
 var UPDATE_INFOS = "update infos set date = ?,place = ?,grade = ?,memo = ?,pic = ? where num = ?";
 
 /**
+ * SQLite終了
+ */
+function closeDB() {
+  db.close(function () {
+    console.log("DB closed!");
+  }, function (error) {
+    console.log("Error closing DB:" + error.message);
+  });
+}
+
+/**
  * SQLite初期設定
  */
 var startDB = function() {
@@ -125,8 +136,7 @@ var startDB = function() {
             var info = new ClimbInfo(num,date,place,grade,memo,pic);
             infos2[x] = info;
           }
-alert("infos2.length:"+infos2.length);
-          infos = info2.concat();
+          infos = infos2.concat();
 alert("4");
         }
         //placesテーブルからデータ取得
@@ -155,6 +165,8 @@ alert("7");
         $('body').pagecontainer('change', '#error');
       });
     }
+
+    closeDB();
   });
 };
 
@@ -164,8 +176,9 @@ alert("7");
 var getInfosOnDate = function(searchDate) {
   var infos2 = [];
   var num,date,place,grade,memo,pic;
-alert("db:"+db);
+alert("searchDate:"+searchDate);
 
+  db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
   db.transaction(function (tx) {
     tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (tx, resultSet) {
 alert("num:"+resultSet.rows.length);
@@ -184,9 +197,15 @@ alert("num:"+resultSet.rows.length);
     },
     function (tx, error) {
       //console.log('SELECT error: ' + error.message);
+      closeDB();
+      //エラー画面に移動
+      $('body').pagecontainer('change', '#error');
     });
   }, function (error) {
     //console.log('transaction error: ' + error.message);
+    closeDB();
+    //エラー画面に移動
+    $('body').pagecontainer('change', '#error');
   }, function () {
     //console.log('transaction ok');
     infosOnDate = null;
@@ -201,6 +220,7 @@ alert(infosOnDate.length);
       infosOnDate = null;
     }
 
+    closeDB();
     //#climb_calendar_searchに移動
     $('body').pagecontainer('change', '#climb_calendar_search');
   });
@@ -210,14 +230,17 @@ alert(infosOnDate.length);
  * placesテーブルのレコードをソート後のレコードに書き換える
  */
 var sortPlaces = function() {
+  db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
   db.transaction(function (tx) {
     tx.executeSql(DELETE_PLACES, [], function(tx, res) {
     },
     function(tx, error) {
+      closeDB();
       //エラー画面に移動
       $('body').pagecontainer('change', '#error');
     });
   }, function(error) {
+    closeDB();
     //エラー画面に移動
     $('body').pagecontainer('change', '#error');
   }, function() {
@@ -229,6 +252,7 @@ var sortPlaces = function() {
     }, function(error) {
       places = null;
       places = places_old.concat();
+      closeDB();
       //エラー画面に移動
       $('body').pagecontainer('change', '#error');
     }, function() {
@@ -238,6 +262,7 @@ var sortPlaces = function() {
       //過去のメモをリスト設定
       setInfoList("#infoList2",infos);
 
+      closeDB();
       //ホーム画面に移動
       $('body').pagecontainer('change', '#home');
     });
@@ -248,14 +273,18 @@ var sortPlaces = function() {
  * infosテーブルにメモを登録する
  */
 var insertInfo = function(date,place,grade,memo,pic) {
+  db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
   db.transaction(function (tx) {
     tx.executeSql(INSERT_INFOS, [date, place, grade, memo, pic], function(tx, res) {
       num = res.insertId;
     },
     function(tx, error) {
-      num = -1;
+      closeDB();
+      //エラー画面に移動
+      $('body').pagecontainer('change', '#error');
     });
   }, function(error) {
+    closeDB();
     //エラー画面に移動
     $('body').pagecontainer('change', '#error');
   }, function() {
@@ -272,6 +301,7 @@ var insertInfo = function(date,place,grade,memo,pic) {
     //過去のメモをリスト設定
     setInfoList("#infoList2",infos);
 
+    closeDB();
     //ホーム画面に移動
     $('body').pagecontainer('change', '#home');
   });
@@ -282,6 +312,7 @@ var insertInfo = function(date,place,grade,memo,pic) {
  * infosテーブルから１件削除する
  */
 var deleteInfos = function(num) {
+  db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
   db.transaction(function (tx) {
     tx.executeSql(DELETE_INFOS_WHERE_NUM, [num], function (tx, res) {
       //infosから削除
@@ -294,13 +325,16 @@ var deleteInfos = function(num) {
       setInfoList("#infoList2",infos);
     },
     function (tx, error) {
+      closeDB();
       //エラー画面に移動
       $('body').pagecontainer('change', '#error');
     });
   }, function (error) {
+    closeDB();
     //エラー画面に移動
     $('body').pagecontainer('change', '#error');
   }, function () {
+    closeDB();
     //ホーム画面に移動
     $('body').pagecontainer('change', '#home');
   });
