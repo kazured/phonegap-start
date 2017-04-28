@@ -333,6 +333,31 @@ $(document).on('click', '#info_create', function() {
   insertInfo(date,place,grade,memo,pic);
 });
 
+//メモ登録画面の初期化
+$(document).on('click', '#climb_new_memo_link', function() {
+  $("#new_climb_day").val("");
+  //先頭の要素を選択状態にする
+  $('#new_climb_place').val(places[0]);
+  // 表示を更新する
+  $('#new_climb_place').selectmenu();
+  $('#new_climb_place').selectmenu('refresh',true);
+  //先頭の要素を選択状態にする
+  $('#new_climb_grade').val("-");
+  // 表示を更新する
+  $('#new_climb_grade').selectmenu();
+  $('#new_climb_grade').selectmenu('refresh',true);
+  $("#new_climb_memo").val("");
+  $("#new_climb_pic").val("");
+  $("#new_climb_img").attr('src',"");
+
+});
+
+//メモをカレンダーで探すの初期化
+$(document).on('click', '#climb_calendar_link', function() {
+  $("#old_climb_day2").val("");
+  $('infoList3').children().remove();
+});
+
 //場所の登録を事前チェック
 $(document).on('click', '#place_create_check', function() {
   var place = $("#new_climb_place_name").val();
@@ -656,25 +681,6 @@ $(document).on('click', '#old_delete', function() {
     //alert("index:" + index);
     deleteInfo(place);
   }
-});
-
-//メモ登録画面の初期化
-$(document).on('click', '#climb_new_memo_link', function() {
-  $("#new_climb_day").val("");
-  //先頭の要素を選択状態にする
-  $('#new_climb_place').val(places[0]);
-  // 表示を更新する
-  $('#new_climb_place').selectmenu();
-  $('#new_climb_place').selectmenu('refresh',true);
-  //先頭の要素を選択状態にする
-  $('#new_climb_grade').val("-");
-  // 表示を更新する
-  $('#new_climb_grade').selectmenu();
-  $('#new_climb_grade').selectmenu('refresh',true);
-  $("#new_climb_memo").val("");
-  $("#new_climb_pic").val("");
-  $("#new_climb_img").attr('src',"");
-
 });
 
 //場所登録画面の初期化

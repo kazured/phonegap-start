@@ -207,7 +207,6 @@ var getInfosOnDate = function(searchDate) {
     $('body').pagecontainer('change', '#climb_calendar');
   },
   function (tx, error) {
-alert("1");
     //console.log('SELECT error: ' + error.message);
     closeDB();
     //エラー画面に移動
@@ -299,7 +298,7 @@ var insertInfo = function(date,place,grade,memo,pic) {
 /**
  * infosテーブルから１件削除する
  */
-var deleteInfos = function(num) {
+var deleteInfo = function(num) {
   db.transaction(function (tx) {
     tx.executeSql(DELETE_INFOS_WHERE_NUM, [num], function (tx, res) {
       //infosから削除
@@ -310,6 +309,9 @@ var deleteInfos = function(num) {
 
       //過去のメモをリスト設定
       setInfoList("#infoList2",infos);
+
+      //カレンダーで探すリストの初期化
+      $('infoList3').children().remove();
     },
     function (tx, error) {
       closeDB();
