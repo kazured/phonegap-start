@@ -691,8 +691,8 @@ $(document).on('click', '#climb_new_place_link', function() {
 //SNSに投稿
 $(document).on('click', '#share_twitter', function() {
   var index = $('#climb_old_memo').data('index');
-  //var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade;
-  var msg = infos[index].memo;
+  var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade;
+  //var msg = infos[index].memo;
   var pic = infos[index].pic;
 
   if (pic == '') {
@@ -705,14 +705,16 @@ $(document).on('click', '#share_twitter', function() {
 $(document).on('click', '#share_fb', function() {
   var index = $('#climb_old_memo').data('index');
   //var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade;
-  var msg = infos[index].memo;
+  var msg1 = "#" + infos[index].place;
+  var msg2 = infos[index].memo;
   var pic = infos[index].pic;
 
   if (pic == '') {
     pic = null;
   }
 
-  window.plugins.socialsharing.shareViaFacebook(msg,pic,null,null, onShareSuccess, onShareError);
+  //window.plugins.socialsharing.shareViaFacebook(msg1,pic,null,null, onShareSuccess, onShareError);
+  window.plugins.socialsharing.shareViaFacebookWithPasteMessageHint(msg1,pic,null,null,msg2, onShareSuccess, onShareError);
 });
 
 var onShareSuccess = function(result) {
