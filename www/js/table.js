@@ -138,11 +138,9 @@ var startDB = function() {
             infos2[x] = info;
           }
           infos = infos2.concat();
-alert("4");
         }
         //placesテーブルからデータ取得
         db.executeSql(SELECT_PLACES, [], function(rs2) {
-alert("5");
           resultNum = rs2.rows.length;
           var places2 = [];
           for(var x = 0; x < resultNum; x++) {
@@ -152,9 +150,7 @@ alert("5");
             var place = new ClimbPlace(num,place);
             places2[x] = place;
           }
-alert("6");
           places = places2.concat();
-alert("7");
           //ホーム画面に移動
           $('body').pagecontainer('change', '#home');
         }, function(error) {
@@ -177,7 +173,8 @@ alert("7");
 var getInfosOnDate = function(searchDate) {
   var infos2 = [];
   var num,date,place,grade,memo,pic;
-alert("searchDate:"+searchDate);
+  var searchDate2 = searchDate.replace( /¥//g , "-" ) ;
+alert("searchDate2:"+searchDate2);
 
   db.transaction(function (tx) {
     tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (tx, resultSet) {
@@ -384,9 +381,9 @@ var insertPlace = function(place) {
     //エラー画面に移動
     $('body').pagecontainer('change', '#error');
   }, function() {
-    //infosの先頭に追加
+    //infosに追加
     var climbPlace = new ClimbPlace(num,place);
-    places.unshift(climbPlace);
+    places.push(climbPlace);
 
     //登った場所のリスト設定
     setPlaceList("#sortPlaceList");
