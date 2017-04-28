@@ -109,12 +109,10 @@ var startDB = function() {
       });
     }
     else {
-alert("1");
       //infosテーブルからデータ取得
       db.executeSql(SELECT_INFOS_GET_NEW_100, [], function(rs) {
         resultNum = rs.rows.length;
         if (resultNum > 0) {
-alert("2");
           var infos2 = [];
           for(var x = 0; x < resultNum; x++) {
             num = rs.rows.item(x).num;
@@ -127,10 +125,13 @@ alert("2");
             var info = new ClimbInfo(num,date,place,grade,memo,pic);
             infos2[x] = info;
           }
+alert("3");
           infos = [].concat(info2);
+alert("4");
         }
         //placesテーブルからデータ取得
         db.executeSql(SELECT_PLACES, [], function(rs2) {
+alert("5");
           resultNum = rs2.rows.length;
           var places2 = [];
           for(var x = 0; x < resultNum; x++) {
@@ -140,7 +141,9 @@ alert("2");
             var place = new ClimbPlace(num,place);
             places2[x] = place;
           }
+alert("6");
           places = [].concat(places2);
+alert("7");
           //ホーム画面に移動
           $('body').pagecontainer('change', '#home');
         }, function(error) {
@@ -163,6 +166,7 @@ var getInfosOnDate = function(searchDate) {
   var num,date,place,grade,memo,pic;
   db.transaction(function (tx) {
     tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (tx, resultSet) {
+alert("num:"+resultSet.rows.length);
       var info;
       for(var x = 0; x < resultSet.rows.length; x++) {
         num = resultSet.rows.item(x).num;
