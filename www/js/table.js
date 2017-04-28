@@ -175,6 +175,7 @@ var getInfosOnDate = function(searchDate) {
   var num,date,place,grade,memo,pic;
   var searchDate2 = searchDate.replace(/\//g, "-" ) ;
 alert("searchDate2:"+searchDate2);
+alert("db:"+db);
 
   db.transaction(function (tx) {
     tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (tx, resultSet) {
@@ -193,12 +194,14 @@ alert("num:"+resultSet.rows.length);
       }
     },
     function (tx, error) {
+alert("1");
       //console.log('SELECT error: ' + error.message);
       closeDB();
       //エラー画面に移動
       $('body').pagecontainer('change', '#error');
     });
   }, function (error) {
+alert("2");
     //console.log('transaction error: ' + error.message);
     closeDB();
     //エラー画面に移動
