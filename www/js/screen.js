@@ -706,7 +706,7 @@ $(document).on('click', '#share_fb', function() {
   var index = $('#climb_old_memo').data('index');
   //var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade;
   var msg1 = "#" + infos[index].place;
-  var msg2 = infos[index].memo;
+  var msg2 = infos[index].date;
   var pic = infos[index].pic;
 
   if (pic == '') {
