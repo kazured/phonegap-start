@@ -71,8 +71,9 @@ var UPDATE_INFOS = "update infos set date = ?,place = ?,grade = ?,memo = ?,pic =
  * SQLite初期設定
  */
 var startDB = function() {
-  var num = 0;
+  var resultNum = 0;
   var sFlg = window.localStorage.getItem("sFlg");
+  var num,date,place,grade,memo,pic;
 
   window.sqlitePlugin.selfTest(function() {
     db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
@@ -110,10 +111,10 @@ var startDB = function() {
     else {
       //infosテーブルからデータ取得
       db.executeSql(SELECT_INFOS_GET_NEW_100, [], function(rs) {
-        num = rs.rows.length;
-        if (num > 0) {
+        resultNum = rs.rows.length;
+        if (resultNum > 0) {
           var infos2 = [];
-          for(var x = 0; x < num; x++) {
+          for(var x = 0; x < resultNum; x++) {
             num = rs.rows.item(x).num;
             date = rs.rows.item(x).date;
             place = rs.rows.item(x).place;
@@ -128,15 +129,15 @@ var startDB = function() {
         }
         //placesテーブルからデータ取得
         db.executeSql(SELECT_PLACES, [], function(rs2) {
+          resultNum = rs2.rows.length;
           var places2 = [];
-          for(var x = 0; x < num; x++) {
+          for(var x = 0; x < resultNum; x++) {
             num = rs2.rows.item(x).num;
             place = rs2.rows.item(x).place;
 
             var place = new ClimbPlace(num,place);
             places2[x] = place;
           }
-          places = null;
           places = [].concat(places2);
           //ホーム画面に移動
           $('body').pagecontainer('change', '#home');

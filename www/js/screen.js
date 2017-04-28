@@ -266,7 +266,6 @@ $(document).on('change', '#new_climb_pic', function() {
 
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
     $('#new_climb_img').attr('src', '');
-    $('#new_climb_img').attr('alt', '');
   }
   else {
     //ファイルを読み込むFileReaderオブジェクト
@@ -277,7 +276,6 @@ $(document).on('change', '#new_climb_pic', function() {
       // 読み込んだデータをimgに設定
       $('#new_climb_img').attr('src', event.target.result);
     };
-    $('#new_climb_img').attr('alt', name);
 
     //画像読み込み
     fileReader.readAsDataURL(file);
@@ -507,7 +505,6 @@ $(document).on('change', '#update_climb_pic', function() {
 
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
     $('#update_climb_img').attr('src', '');
-    $('#update_climb_img').attr('alt', '');
   }
   else {
     //ファイルを読み込むFileReaderオブジェクト
@@ -516,9 +513,8 @@ $(document).on('change', '#update_climb_pic', function() {
     //読み込みが完了した際のイベントハンドラ。imgのsrcにデータをセット
     fileReader.onload = function(event) {
       // 読み込んだデータをimgに設定
-      $('#new_climb_img').attr('src', event.target.result);
+      $('#update_climb_img').attr('src', event.target.result);
     };
-    $('#new_climb_img').attr('alt', name);
 
     //画像読み込み
     fileReader.readAsDataURL(file);
@@ -538,7 +534,6 @@ var inputPicture = function(id,name) {
 
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
     $(imgId).attr('src', '');
-    $(imgId).attr('alt', '');
   }
   else {
     //ファイルを読み込むFileReaderオブジェクト
