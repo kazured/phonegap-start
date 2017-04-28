@@ -138,6 +138,8 @@ var startDB = function() {
             infos2[x] = info;
           }
           infos = infos2.concat();
+
+
         }
         //placesテーブルからデータ取得
         db.executeSql(SELECT_PLACES, [], function(rs2) {
@@ -254,11 +256,15 @@ var sortPlaces = function() {
       //エラー画面に移動
       $('body').pagecontainer('change', '#error');
     }, function() {
-      //最新のメモをリスト設定
-      setNewInfo(infos);
+      //登った場所のリスト設定
+      setPlaceList("#sortPlaceList");
 
-      //過去のメモをリスト設定
-      setInfoList("#infoList2",infos);
+      //登った場所のセレクトボックス設定
+      setPlaceSelectBox('#new_climb_place');
+      setPlaceSelectBox('#update_climb_place');
+
+      //登った場所のラジオボタン設定
+      setPlaceRadio();
 
       //ホーム画面に移動
       $('body').pagecontainer('change', '#home');
@@ -290,7 +296,6 @@ var insertInfo = function(date,place,grade,memo,pic) {
     if (infos.length == 101) {
       infos.pop();
     }
-
     //最新のメモをリスト設定
     setNewInfo(infos);
 

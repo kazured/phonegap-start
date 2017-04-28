@@ -109,6 +109,9 @@ $(document).on('pagecreate', '#climb_new_place', function() {
 
 //場所を並び替える
 $(document).on('pagecreate','#climb_sort_places',function(){
+  //登った場所のリスト設定
+  setPlaceList("#sortPlaceList");
+
   var $listview = $('#sortPlaceList[data-role="listview"]');
   var $switch = $('input#switch[type="checkbox"]');
   var $output = $('input#output[type="text"][readonly]');
