@@ -630,7 +630,7 @@ $(document).on('click', '#climb_new_memo_link', function() {
   $('#new_climb_place').selectmenu();
   $('#new_climb_place').selectmenu('refresh',true);
   //先頭の要素を選択状態にする
-  $('#new_climb_grade').val("10級");
+  $('#new_climb_grade').val("-");
   // 表示を更新する
   $('#new_climb_grade').selectmenu();
   $('#new_climb_grade').selectmenu('refresh',true);
@@ -654,7 +654,6 @@ $(document).on('click', '#share_memo', function() {
   if (pic == '') {
     pic = null;
   }
-alert("msg:"+msg);
 
   var options = {
     message: msg, // not supported on some apps (Facebook, Instagram)
@@ -663,7 +662,7 @@ alert("msg:"+msg);
     url: null,
     chooserTitle: null // Android only, you can override the default share sheet title
   };
-alert("aaa");
+
   window.plugins.socialsharing.shareWithOptions(options, onShareSuccess, onShareError);
 });
 
