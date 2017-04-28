@@ -410,6 +410,7 @@ $(document).on('click', '#climb_calendar_check', function() {
 
 //カレンダーで探す
 $(document).on('click', '#climb_calendar_search', function() {
+  var day_text = $('#old_climb_day2').val();
   //データ処理画面に移動
   $('body').pagecontainer('change', '#start');
 

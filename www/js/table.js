@@ -109,10 +109,12 @@ var startDB = function() {
       });
     }
     else {
+alert("1");
       //infosテーブルからデータ取得
       db.executeSql(SELECT_INFOS_GET_NEW_100, [], function(rs) {
         resultNum = rs.rows.length;
         if (resultNum > 0) {
+alert("2");
           var infos2 = [];
           for(var x = 0; x < resultNum; x++) {
             num = rs.rows.item(x).num;
