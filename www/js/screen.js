@@ -477,6 +477,36 @@ $(document).on('click', '#infoList2 li', function() {
   $('body').pagecontainer('change', '#climb_old_memo');
 });
 
+//#climb_calendarでリストが押された場合
+$(document).on('click', '#infoList3 li', function() {
+  //どのliが押されたか
+  var index = $("#infoList3 li").index(this);
+
+  //infos[]のindexを保存
+  $('#climb_old_memo').data('index',index);
+
+  //画面に情報を設定
+  //登った日
+  $("#old_climb_day").text(infos[index].date);
+
+  //登った場所
+  $("#old_climb_place").text(infos[index].place);
+
+  //グレード
+  $("#old_climb_grade").text(infos[index].grade);
+
+  //メモ
+  $("#old_climb_memo").text(infos[index].memo);
+
+  //写真
+  $("#old_climb_img").attr('src',infos[index].pic);
+
+  //戻るリンク
+  $("#old_climb_return").attr('href','#climb_calendar');
+
+  $('body').pagecontainer('change', '#climb_old_memo');
+});
+
 //メモの更新をクリック
 $(document).on('click', '#update_memo', function() {
   var index = $('#climb_old_memo').data('index');

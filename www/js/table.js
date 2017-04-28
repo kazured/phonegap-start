@@ -197,9 +197,9 @@ var getInfosOnDate = function(searchDate) {
       setInfoList('#infoList3',infosOnDate);
     }
     else {
+      infosOnDate = [];
       infosOnDate[0] = [new ClimbInfo(0,'0件です','','','','')];
       setInfoList('#infoList3',infosOnDate);
-      infosOnDate = null;
     }
 
     //#climb_calendar_searchに移動
