@@ -1,6 +1,6 @@
 var $html;
 var $mask;
-var LI_STR_LEN = 10;
+var LI_STR_LEN = 15;
 var ERROR_MESSAGE = "システムエラーが発生しました";
 
 /**
@@ -317,7 +317,7 @@ $(document).on('click', '#info_create_check', function() {
   }
 });
 
-//メモの登録ボタンをクリック
+//メモの登録
 $(document).on('click', '#info_create', function() {
   var date = $("#new_climb_day").val();
   var place = $("#new_climb_place").val();
@@ -510,19 +510,22 @@ $(document).on('click', '#info_update_check', function() {
   }
 });
 
-//メモの登録ボタンをクリック
-$(document).on('click', '#info_create', function() {
-  var date = $("#new_climb_day").val();
-  var place = $("#new_climb_place").val();
-  var grade = $("#new_climb_grade").val();
-  var memo = $("#new_climb_memo").val();
-  var pic = $("#new_climb_img").prop('src');
+//メモの更新
+$(document).on('click', '#info_update', function() {
+  var index = $('#climb_old_memo').data('index');
+  var num = infos[index].num;
+
+  var date = $("#update_climb_day").val();
+  var place = $("#update_climb_place").val();
+  var grade = $("#update_climb_grade").val();
+  var memo = $("#update_climb_memo").val();
+  var pic = $("#update_climb_img").prop('src');
 
   //データ処理画面に移動
   $('body').pagecontainer('change', '#start');
 
-  //infosテーブルに登録
-  insertInfo(date,place,grade,memo,pic);
+  //infosテーブルを更新
+  updateInfo(index,num,date,place,grade,memo,pic);
 });
 
 //メモの削除をクリック
@@ -566,7 +569,7 @@ $(document).on('click', '#climb_new_place_link', function() {
 //SNSに投稿
 $(document).on('click', '#share_memo', function() {
   var index = $('#climb_old_memo').data('index');
-  var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade
+  var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade;
   var pic = infos[index].pic;
 
   if (pic == '') {
@@ -579,7 +582,7 @@ $(document).on('click', '#share_memo', function() {
     files: pic, // an array of filenames either locally or remotely
     url: null,
     chooserTitle: null // Android only, you can override the default share sheet title
-  }
+  };
 
   window.plugins.socialsharing.shareWithOptions(options, onShareSuccess, onShareError);
 });
