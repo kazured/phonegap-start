@@ -103,6 +103,7 @@ var startDB = function() {
           tx2.executeSql(INSERT_PLACES, [INSERT_PLACE2]);
         }, function(error) {
           //console.log('Transaction ERROR: ' + error.message);
+          closeDB();
           //エラー画面に移動
           $('body').pagecontainer('change', '#error');
           //rtn = false;
@@ -113,7 +114,6 @@ var startDB = function() {
           //localStorageにセット
           window.localStorage.setItem("sFlg","1");
 
-          closeDB();
           //ホーム画面に移動
           $('body').pagecontainer('change', '#home');
           //rtn = true;
@@ -155,7 +155,6 @@ alert("5");
 alert("6");
           places = places2.concat();
 alert("7");
-          closeDB();
           //ホーム画面に移動
           $('body').pagecontainer('change', '#home');
         }, function(error) {
@@ -180,7 +179,6 @@ var getInfosOnDate = function(searchDate) {
   var num,date,place,grade,memo,pic;
 alert("searchDate:"+searchDate);
 
-  db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
   db.transaction(function (tx) {
     tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (tx, resultSet) {
 alert("num:"+resultSet.rows.length);
@@ -222,7 +220,6 @@ alert(infosOnDate.length);
       infosOnDate = null;
     }
 
-    closeDB();
     //#climb_calendar_searchに移動
     $('body').pagecontainer('change', '#climb_calendar_search');
   });
@@ -232,7 +229,6 @@ alert(infosOnDate.length);
  * placesテーブルのレコードをソート後のレコードに書き換える
  */
 var sortPlaces = function() {
-  db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
   db.transaction(function (tx) {
     tx.executeSql(DELETE_PLACES, [], function(tx, res) {
     },
@@ -264,7 +260,6 @@ var sortPlaces = function() {
       //過去のメモをリスト設定
       setInfoList("#infoList2",infos);
 
-      closeDB();
       //ホーム画面に移動
       $('body').pagecontainer('change', '#home');
     });
@@ -275,7 +270,6 @@ var sortPlaces = function() {
  * infosテーブルにメモを登録する
  */
 var insertInfo = function(date,place,grade,memo,pic) {
-  db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
   db.transaction(function (tx) {
     tx.executeSql(INSERT_INFOS, [date, place, grade, memo, pic], function(tx, res) {
       num = res.insertId;
@@ -303,7 +297,6 @@ var insertInfo = function(date,place,grade,memo,pic) {
     //過去のメモをリスト設定
     setInfoList("#infoList2",infos);
 
-    closeDB();
     //ホーム画面に移動
     $('body').pagecontainer('change', '#home');
   });
@@ -314,7 +307,6 @@ var insertInfo = function(date,place,grade,memo,pic) {
  * infosテーブルから１件削除する
  */
 var deleteInfos = function(num) {
-  db = window.sqlitePlugin.openDatabase({name: 'memo.db', location: 'default'});
   db.transaction(function (tx) {
     tx.executeSql(DELETE_INFOS_WHERE_NUM, [num], function (tx, res) {
       //infosから削除
@@ -336,7 +328,6 @@ var deleteInfos = function(num) {
     //エラー画面に移動
     $('body').pagecontainer('change', '#error');
   }, function () {
-    closeDB();
     //ホーム画面に移動
     $('body').pagecontainer('change', '#home');
   });
@@ -353,9 +344,12 @@ var updateInfo = function(index,num,date,place,grade,memo,pic) {
       infos[index] = climbInfo;
     },
     function(tx, error) {
-
+      closeDB();
+      //エラー画面に移動
+      $('body').pagecontainer('change', '#error');
     });
   }, function(error) {
+    closeDB();
     //エラー画面に移動
     $('body').pagecontainer('change', '#error');
   }, function() {
@@ -381,9 +375,12 @@ var insertPlace = function(place) {
       num = res.insertId;
     },
     function(tx, error) {
-      num = -1;
+      closeDB();
+      //エラー画面に移動
+      $('body').pagecontainer('change', '#error');
     });
   }, function(error) {
+    closeDB();
     //エラー画面に移動
     $('body').pagecontainer('change', '#error');
   }, function() {
@@ -426,12 +423,14 @@ var deletePlace = function(place) {
       setPlaceRadio();
     },
     function (tx, error) {
+      closeDB();
       //エラー画面に移動
       $('body').pagecontainer('change', '#error');
     });
   }, function (error) {
-	//エラー画面に移動
-	$('body').pagecontainer('change', '#error');
+    closeDB();
+    //エラー画面に移動
+    $('body').pagecontainer('change', '#error');
   }, function () {
     //ホーム画面に移動
     $('body').pagecontainer('change', '#home');
