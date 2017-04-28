@@ -53,7 +53,7 @@ var CREATE_PLACES = "create table if not exists places(num integer primary key, 
 
 //DML
 var SELECT_INFOS_GET_NEW_100 = "select * from infos order by num asc limit 100";
-var SELECT_INFOS_WHERE_DATE = "select * from infos order by num asc where date = ?";
+var SELECT_INFOS_WHERE_DATE = "select * from infos where date = ? order by num asc";
 var SELECT_PLACES = "select * from places order by num asc";
 
 var INSERT_INFOS = "insert into infos (date,place,grade,memo,pic) values (?,?,?,?,?)";
@@ -179,36 +179,21 @@ var getInfosOnDate = function(searchDate) {
 alert("searchDate2:"+searchDate2);
 alert("db:"+db);
 
-  db.transaction(function (tx) {
-    tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate2], function (tx, resultSet) {
-alert("num:"+resultSet.rows.length);
-      var info;
-      for(var x = 0; x < resultSet.rows.length; x++) {
-        num = resultSet.rows.item(x).num;
-        date = resultSet.rows.item(x).date;
-        place = resultSet.rows.item(x).place;
-        grade = resultSet.rows.item(x).grade;
-        memo = resultSet.rows.item(x).memo;
-        pic = resultSet.rows.item(x).pic;
+  db.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate2], function (rs) {
+alert("num:"+rs.rows.length);
+    var info;
+    var len = rs.rows.length;
+    for ( var x = 0; x < len; x++) {
+      num = rs.rows.item(x).num;
+      date = rs.rows.item(x).date;
+      place = rs.rows.item(x).place;
+      grade = rs.rows.item(x).grade;
+      memo = rs.rows.item(x).memo;
+      pic = rs.rows.item(x).pic;
 
-        info = new ClimbInfo(num,date,place,grade,memo,pic);
-        infos2[x] = info;
-      }
-    },
-    function (tx, error) {
-alert("1");
-      //console.log('SELECT error: ' + error.message);
-      closeDB();
-      //エラー画面に移動
-      $('body').pagecontainer('change', '#error');
-    });
-  }, function (error) {
-alert("2");
-    //console.log('transaction error: ' + error.message);
-    closeDB();
-    //エラー画面に移動
-    $('body').pagecontainer('change', '#error');
-  }, function () {
+      info = new ClimbInfo(num,date,place,grade,memo,pic);
+      infos2[x] = info;
+    }
     //console.log('transaction ok');
     infosOnDate = null;
     infosOnDate = infos2.concat();
@@ -224,6 +209,13 @@ alert(infosOnDate.length);
 
     //#climb_calendar_searchに移動
     $('body').pagecontainer('change', '#climb_calendar_search');
+  },
+  function (tx, error) {
+alert("1");
+    //console.log('SELECT error: ' + error.message);
+    closeDB();
+    //エラー画面に移動
+    $('body').pagecontainer('change', '#error');
   });
 };
 
