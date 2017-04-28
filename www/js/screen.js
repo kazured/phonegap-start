@@ -714,7 +714,7 @@ $(document).on('click', '#share_fb', function() {
   }
 
   //window.plugins.socialsharing.shareViaFacebook(msg1,pic,null,null, onShareSuccess, onShareError);
-  window.plugins.socialsharing.shareViaFacebookWithPasteMessageHint(msg1,pic,null,null,msg2, onShareSuccess, onShareError);
+  window.plugins.socialsharing.shareViaFacebookWithPasteMessageHint(msg1,pic,null,msg2, onShareSuccess, onShareError);
 });
 
 var onShareSuccess = function(result) {
