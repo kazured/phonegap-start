@@ -168,6 +168,7 @@ var getInfosOnDate = function(searchDate) {
         num = resultSet.rows.item(x).num;
         date = resultSet.rows.item(x).date;
         place = resultSet.rows.item(x).place;
+        grade = resultSet.rows.item(x).grade;
         memo = resultSet.rows.item(x).memo;
         pic = resultSet.rows.item(x).pic;
 
@@ -184,7 +185,7 @@ var getInfosOnDate = function(searchDate) {
     //console.log('transaction ok');
     infosOnDate = null;
     infosOnDate = [].concat(infos2);
-
+alert(infosOnDate.length);
     if (infosOnDate != null && infosOnDate.length > 0) {
       setInfoList('#infoList3',infosOnDate);
     }
