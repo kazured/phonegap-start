@@ -149,8 +149,8 @@ var startDB = function() {
             num = rs2.rows.item(x).num;
             place = rs2.rows.item(x).place;
 
-            var place = new ClimbPlace(num,place);
-            places2[x] = place;
+            var climbPlace = new ClimbPlace(num,place);
+            places2[x] = climbPlace;
           }
           places = places2.concat();
           //ホーム画面に移動
@@ -180,7 +180,7 @@ alert("searchDate2:"+searchDate2);
 alert("db:"+db);
 
   db.transaction(function (tx) {
-    tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (tx, resultSet) {
+    tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate2], function (tx, resultSet) {
 alert("num:"+resultSet.rows.length);
       var info;
       for(var x = 0; x < resultSet.rows.length; x++) {
