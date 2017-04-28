@@ -689,24 +689,29 @@ $(document).on('click', '#climb_new_place_link', function() {
 });
 
 //SNSに投稿
-$(document).on('click', '#share_memo', function() {
+$(document).on('click', '#share_twitter', function() {
   var index = $('#climb_old_memo').data('index');
-  var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade;
+  //var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade;
+  var msg = infos[index].memo;
   var pic = infos[index].pic;
 
   if (pic == '') {
     pic = null;
   }
-alert("msg:"+msg);
-  var options = {
-    message: msg, // not supported on some apps (Facebook, Instagram)
-    subject: null, // fi. for email
-    files: pic, // an array of filenames either locally or remotely
-    url: null,
-    chooserTitle: null // Android only, you can override the default share sheet title
-  };
-alert("2");
-  //window.plugins.socialsharing.shareWithOptions(options, onShareSuccess, onShareError);
+
+  window.plugins.socialsharing.shareViaTwitter(msg,pic,null, onShareSuccess, onShareError);
+});
+
+$(document).on('click', '#share_fb', function() {
+  var index = $('#climb_old_memo').data('index');
+  //var msg = infos[index].date + " " + infos[index].memo + " #" + infos[index].place + " #" + infos[index].grade;
+  var msg = infos[index].memo;
+  var pic = infos[index].pic;
+
+  if (pic == '') {
+    pic = null;
+  }
+
   window.plugins.socialsharing.shareViaFacebook(msg,pic,null,null, onShareSuccess, onShareError);
 });
 
