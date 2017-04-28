@@ -173,7 +173,7 @@ var startDB = function() {
 var getInfosOnDate = function(searchDate) {
   var infos2 = [];
   var num,date,place,grade,memo,pic;
-  var searchDate2 = searchDate.replace( /¥//g , "-" ) ;
+  var searchDate2 = searchDate.replace(/\//g, "-" ) ;
 alert("searchDate2:"+searchDate2);
 
   db.transaction(function (tx) {
