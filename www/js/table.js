@@ -300,7 +300,9 @@ var insertInfo = function(date,place,grade,memo,pic) {
  */
 var deleteInfo = function(num) {
   db.transaction(function (tx) {
+alert("num:"+num);
     tx.executeSql(DELETE_INFOS_WHERE_NUM, [num], function (tx, res) {
+alert("1");
       //infosから削除
       deleteInfoFromArray(num);
 
@@ -311,7 +313,7 @@ var deleteInfo = function(num) {
       setInfoList("#infoList2",infos);
 
       //カレンダーで探すリストの初期化
-      $('infoList3').children().remove();
+      $('infoList3').find('li').remove();
     },
     function (tx, error) {
       closeDB();

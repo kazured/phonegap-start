@@ -355,7 +355,7 @@ $(document).on('click', '#climb_new_memo_link', function() {
 //メモをカレンダーで探すの初期化
 $(document).on('click', '#climb_calendar_link', function() {
   $("#old_climb_day2").val("");
-  $('infoList3').children().remove();
+  $('infoList3').find('li').remove();
 });
 
 //場所の登録を事前チェック
@@ -679,7 +679,7 @@ $(document).on('click', '#old_delete', function() {
     $('body').pagecontainer('change', '#start');
 
     //alert("index:" + index);
-    deleteInfo(place);
+    deleteInfo(index);
   }
 });
 
