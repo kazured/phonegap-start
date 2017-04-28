@@ -263,6 +263,7 @@ var setTestData = function() {
 $(document).on('change', '#new_climb_pic', function() {
   var file = this.files[0];
   var name = file.name;
+  /*
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
     $('#new_climb_img').attr('src', '');
     $('#new_climb_img').attr('alt', '');
@@ -281,6 +282,9 @@ $(document).on('change', '#new_climb_pic', function() {
     //画像読み込み
     fileReader.readAsDataURL(file);
   }
+  */
+  inputPicture('#new_climb_pic',name);
+
 });
 
 //メモ新規登録画面のカメラ起動
@@ -496,6 +500,82 @@ $(document).on('click', '#update_memo', function() {
 
   $('body').pagecontainer('change', '#climb_update_memo');
 });
+
+//メモ更新画面の画像ファイル読み込み
+$(document).on('change', '#update_climb_pic', function() {
+  var file = this.files[0];
+  var name = file.name;
+  /*
+  if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
+    $('#update_climb_img').attr('src', '');
+    $('#update_climb_img').attr('alt', '');
+  }
+  else {
+    //ファイルを読み込むFileReaderオブジェクト
+    var fileReader = new FileReader();
+
+    //読み込みが完了した際のイベントハンドラ。imgのsrcにデータをセット
+    fileReader.onload = function(event) {
+      // 読み込んだデータをimgに設定
+      $('#new_climb_img').attr('src', event.target.result);
+    };
+    $('#new_climb_img').attr('alt', name);
+
+    //画像読み込み
+    fileReader.readAsDataURL(file);
+  }*/
+  inputPicture('#update_climb_pic',name);
+});
+
+var inputPicture = function(id,name) {
+  var imgId;
+
+  if (id == '#new_climb_pic') {
+    imgId = '#new_climb_img';
+  }
+  else if (id == '#update_climb_pic') {
+    imgId = '#update_climb_img';
+  }
+
+  if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
+    $(imgId).attr('src', '');
+    $(imgId).attr('alt', '');
+  }
+  else {
+    //ファイルを読み込むFileReaderオブジェクト
+    var fileReader = new FileReader();
+
+    //読み込みが完了した際のイベントハンドラ。imgのsrcにデータをセット
+    fileReader.onload = function(event) {
+      // 読み込んだデータをimgに設定
+      $(imgId).attr('src', event.target.result);
+    };
+
+    //画像読み込み
+    fileReader.readAsDataURL(file);
+  }
+};
+
+//メモ更新画面のカメラ起動
+$(document).on('click', '#update_climb_camera', function() {
+  navigator.camera.getPicture(onUpdateCameraSuccess, onUpdateCameraFail, { quality: 50,
+    destinationType: Camera.DestinationType.DATA_URL
+  });
+});
+
+/**
+ * カメラ撮影が成功した場合に、メモ新規登録画面に画像を反映する
+ */
+function onUpdateCameraSuccess(imageData) {
+  $('#update_climb_img').attr('src', "data:image/jpeg;base64," + imageData);
+}
+
+/**
+ * カメラ撮影が失敗した場合に、エラーメッセージを表示する
+ */
+function onUpdateCameraFail(message) {
+  console.log(ERROR_MESSAGE);
+}
 
 //メモの更新を事前チェック
 $(document).on('click', '#info_update_check', function() {
