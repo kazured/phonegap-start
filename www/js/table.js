@@ -218,6 +218,7 @@ var getInfosOnDate = function(searchDate) {
  * placesテーブルのレコードをソート後のレコードに書き換える
  */
 var sortPlaces = function() {
+  places_old = places.concat();
   db.transaction(function (tx) {
     tx.executeSql(DELETE_PLACES, [], function(tx, res) {
     },
@@ -233,8 +234,8 @@ var sortPlaces = function() {
   }, function() {
     db.transaction(function(tx2) {
       for (var x = 0; x < places.length; x++) {
-        tx2.executeSql(INSERT_PLACES, [places[x]]);
-        places[x].num = x;
+        tx2.executeSql(INSERT_PLACES, [places[x].place]);
+        places[x].num = x + 1;
       }
     }, function(error) {
       places = null;
@@ -300,9 +301,7 @@ var insertInfo = function(date,place,grade,memo,pic) {
  */
 var deleteInfo = function(num) {
   db.transaction(function (tx) {
-alert("num:"+num);
     tx.executeSql(DELETE_INFOS_WHERE_NUM, [num], function (tx, res) {
-alert("1");
       //infosから削除
       deleteInfoFromArray(num);
 
