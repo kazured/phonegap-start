@@ -113,6 +113,7 @@ var startDB = function() {
           //localStorageにセット
           window.localStorage.setItem("sFlg","1");
 
+          closeDB();
           //ホーム画面に移動
           $('body').pagecontainer('change', '#home');
           //rtn = true;
@@ -154,19 +155,20 @@ alert("5");
 alert("6");
           places = places2.concat();
 alert("7");
+          closeDB();
           //ホーム画面に移動
           $('body').pagecontainer('change', '#home');
         }, function(error) {
+          closeDB();
           //エラー画面に移動
           $('body').pagecontainer('change', '#error');
         });
       }, function(error) {
+        closeDB();
         //エラー画面に移動
         $('body').pagecontainer('change', '#error');
       });
     }
-
-    closeDB();
   });
 };
 
