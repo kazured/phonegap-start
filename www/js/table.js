@@ -175,11 +175,8 @@ var startDB = function() {
 var getInfosOnDate = function(searchDate) {
   var infos2 = [];
   var num,date,place,grade,memo,pic;
-  var searchDate2 = searchDate.replace(/\//g, "-" ) ;
-alert("searchDate2:"+searchDate2);
-alert("db:"+db);
 
-  db.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate2], function (rs) {
+  db.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (rs) {
 alert("num:"+rs.rows.length);
     var info;
     var len = rs.rows.length;
@@ -202,7 +199,7 @@ alert(infosOnDate.length);
       setInfoList('#infoList3',infosOnDate);
     }
     else {
-      infosOnDate = [new ClimbInfo(0,'0件です','','','','')];
+      infosOnDate[0] = [new ClimbInfo(0,'0件です','','','','')];
       setInfoList('#infoList3',infosOnDate);
       infosOnDate = null;
     }
