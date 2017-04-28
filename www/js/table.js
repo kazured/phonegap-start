@@ -54,7 +54,7 @@ var CREATE_PLACES = "create table if not exists places(num integer primary key, 
 //DML
 //var SELECT_INFOS_GET_NEW_100 = "select * from infos order by num desc limit 100";
 var SELECT_INFOS_GET_NEW_100 = "select num,date,place,grade,memo,pic,replace(date,'/','') as datenum from infos order by datenum desc,num desc limit 100";
-var SELECT_INFOS_WHERE_DATE = "select * from infos where date = ? order by num asc";
+var SELECT_INFOS_WHERE_DATE = "select * from infos where date = ? order by num desc";
 var SELECT_PLACES = "select * from places order by num asc";
 
 var INSERT_INFOS = "insert into infos (date,place,grade,memo,pic) values (?,?,?,?,?)";
