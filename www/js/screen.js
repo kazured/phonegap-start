@@ -697,7 +697,7 @@ $(document).on('click', '#share_memo', function() {
   if (pic == '') {
     pic = null;
   }
-
+alert("msg:"+msg);
   var options = {
     message: msg, // not supported on some apps (Facebook, Instagram)
     subject: null, // fi. for email
@@ -705,8 +705,9 @@ $(document).on('click', '#share_memo', function() {
     url: null,
     chooserTitle: null // Android only, you can override the default share sheet title
   };
-
-  window.plugins.socialsharing.shareWithOptions(options, onShareSuccess, onShareError);
+alert("2");
+  //window.plugins.socialsharing.shareWithOptions(options, onShareSuccess, onShareError);
+  window.plugins.socialsharing.shareViaFacebook(msg,pic,null,null, onShareSuccess, onShareError);
 });
 
 var onShareSuccess = function(result) {
