@@ -99,7 +99,7 @@ var startDB = function() {
           places[1] = new ClimbPlace(1,INSERT_PLACE2);
 
           //localStorageにセット
-          window.localStorage.getItem("sFlg","1");
+          window.localStorage.setItem("sFlg","1");
 
           //ホーム画面に移動
           $('body').pagecontainer('change', '#home');
