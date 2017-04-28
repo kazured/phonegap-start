@@ -325,7 +325,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
 <div data-role="page" id="climb_calendar">
   <div data-role="header" data-theme="a" data-add-back-btn="true" data-back-btn-text="戻る">
     <a href="#home" class="ui-btn ui-icon-home ui-btn-icon-left ui-corner-all">ホーム</a>
-    <h1>メモをカレンダーで探す</h1>
+    <h1>カレンダーで探す</h1>
   </div>
 
   <label for="old_climb_day2">登った日</label>
@@ -347,7 +347,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
 
   <div data-role="popup" id="climb_calendar_popup" data-overlay-theme="a" data-dismissible="false" data-history="false">
     <div data-role="header" data-theme="a">
-      <h1>メモをカレンダーで探す</h1>
+      <h1>カレンダーで探す</h1>
     </div>
     <div role="main" class="ui-content">
       <p>メモを検索しますがよろしいですか？</p>
@@ -401,7 +401,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
     <div role="main" class="ui-content">
       <p>場所を登録しますがよろしいですか？</p>
       <div data-role="navbar" data-iconpos="top" data-theme="b">
-        <ul>
+        <ul data-theme="b">
           <li><a href="#" id="place_create" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">はい</a></li>
           <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">キャンセル</a></li>
         </ul>
@@ -416,7 +416,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
     <div role="main" class="ui-content">
       <p>場所を入力してください</p>
       <div data-role="navbar" data-iconpos="top" data-theme="b">
-        <ul>
+        <ul data-theme="b">
           <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">戻る</a></li>
         </ul>
       </div>
@@ -437,7 +437,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
 
   <div data-role="footer" data-position="fixed" data-theme="b">
     <div data-role="navbar" data-iconpos="top">
-      <ul>
+      <ul data-theme="b">
         <li><a href="#place_sort_popup" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-edit ui-btn-icon-left">並び替え</a></li>
       </ul>
     </div>
@@ -450,7 +450,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
     <div role="main" class="ui-content">
       <p>場所を並び替えますがよろしいですか？</p>
       <div data-role="navbar" data-iconpos="top" data-theme="b">
-        <ul>
+        <ul data-theme="b">
           <li><a href="#" id="place_sort" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">はい</a></li>
           <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">キャンセル</a></li>
         </ul>
@@ -471,7 +471,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
 
   <div data-role="footer" data-position="fixed" data-theme="b">
     <div data-role="navbar" data-iconpos="top">
-      <ul>
+      <ul data-theme="b">
         <li><button class="ui-btn ui-btn-icon-left ui-icon-delete" id="place_delete_check">削除</button></li>
       </ul>
     </div>
@@ -484,7 +484,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
     <div role="main" class="ui-content">
       <p>場所を削除しますがよろしいですか？</p>
       <div data-role="navbar" data-iconpos="top" data-theme="b">
-        <ul>
+        <ul data-theme="b">
           <li><a href="#" id="place_delete" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">はい</a></li>
           <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">キャンセル</a></li>
         </ul>
@@ -499,7 +499,7 @@ $(document).on('pagecreate', '#climb_delete_place', function() {
     <div role="main" class="ui-content">
       <p>場所が2件以上無ければ削除できません</p>
       <div data-role="navbar" data-iconpos="top" data-theme="b">
-        <ul>
+        <ul data-theme="b">
           <li><a href="#" data-rel="back" class="ui-btn ui-corner-all ui-btn-inline ui-mini">戻る</a></li>
         </ul>
       </div>

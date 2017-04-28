@@ -177,7 +177,6 @@ var getInfosOnDate = function(searchDate) {
   var num,date,place,grade,memo,pic;
 
   db.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (rs) {
-alert("num:"+rs.rows.length);
     var info;
     var len = rs.rows.length;
     for ( var x = 0; x < len; x++) {
@@ -194,7 +193,6 @@ alert("num:"+rs.rows.length);
     //console.log('transaction ok');
     infosOnDate = null;
     infosOnDate = infos2.concat();
-alert(infosOnDate.length);
     if (infosOnDate != null && infosOnDate.length > 0) {
       setInfoList('#infoList3',infosOnDate);
     }
@@ -205,7 +203,7 @@ alert(infosOnDate.length);
     }
 
     //#climb_calendar_searchに移動
-    $('body').pagecontainer('change', '#climb_calendar_search');
+    $('body').pagecontainer('change', '#climb_calendar');
   },
   function (tx, error) {
 alert("1");
