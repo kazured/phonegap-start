@@ -125,6 +125,7 @@ var startDB = function() {
             var info = new ClimbInfo(num,date,place,grade,memo,pic);
             infos2[x] = info;
           }
+alert("infos2.length:"+infos2.length);
           infos = info2.concat();
 alert("4");
         }
@@ -163,7 +164,7 @@ alert("7");
 var getInfosOnDate = function(searchDate) {
   var infos2 = [];
   var num,date,place,grade,memo,pic;
-alert("getInfosOnDate");
+alert("db:"+db);
 
   db.transaction(function (tx) {
     tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (tx, resultSet) {
