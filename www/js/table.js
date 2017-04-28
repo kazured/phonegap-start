@@ -125,8 +125,7 @@ var startDB = function() {
             var info = new ClimbInfo(num,date,place,grade,memo,pic);
             infos2[x] = info;
           }
-alert("3");
-          infos = [].concat(info2);
+          infos = info2.concat();
 alert("4");
         }
         //placesテーブルからデータ取得
@@ -142,7 +141,7 @@ alert("5");
             places2[x] = place;
           }
 alert("6");
-          places = [].concat(places2);
+          places = places2.concat();
 alert("7");
           //ホーム画面に移動
           $('body').pagecontainer('change', '#home');
@@ -164,6 +163,8 @@ alert("7");
 var getInfosOnDate = function(searchDate) {
   var infos2 = [];
   var num,date,place,grade,memo,pic;
+alert("getInfosOnDate");
+
   db.transaction(function (tx) {
     tx.executeSql(SELECT_INFOS_WHERE_DATE, [searchDate], function (tx, resultSet) {
 alert("num:"+resultSet.rows.length);
@@ -188,7 +189,7 @@ alert("num:"+resultSet.rows.length);
   }, function () {
     //console.log('transaction ok');
     infosOnDate = null;
-    infosOnDate = [].concat(infos2);
+    infosOnDate = infos2.concat();
 alert(infosOnDate.length);
     if (infosOnDate != null && infosOnDate.length > 0) {
       setInfoList('#infoList3',infosOnDate);
@@ -226,7 +227,7 @@ var sortPlaces = function() {
       }
     }, function(error) {
       places = null;
-      places = [].concat(places_old);
+      places = places_old.concat();
       //エラー画面に移動
       $('body').pagecontainer('change', '#error');
     }, function() {
