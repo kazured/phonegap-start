@@ -263,7 +263,7 @@ var setTestData = function() {
 $(document).on('change', '#new_climb_pic', function() {
   var file = this.files[0];
   var name = file.name;
-  /*
+
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
     $('#new_climb_img').attr('src', '');
     $('#new_climb_img').attr('alt', '');
@@ -282,8 +282,7 @@ $(document).on('change', '#new_climb_pic', function() {
     //画像読み込み
     fileReader.readAsDataURL(file);
   }
-  */
-  inputPicture('#new_climb_pic',name);
+  //inputPicture('#new_climb_pic',name);
 
 });
 
@@ -505,7 +504,7 @@ $(document).on('click', '#update_memo', function() {
 $(document).on('change', '#update_climb_pic', function() {
   var file = this.files[0];
   var name = file.name;
-  /*
+
   if(name.match(/.gif$|.png$|.jpg$|.jpeg$|.GIF$|.PNG$|.JPG$|.JPEG$/) == null) {
     $('#update_climb_img').attr('src', '');
     $('#update_climb_img').attr('alt', '');
@@ -523,8 +522,8 @@ $(document).on('change', '#update_climb_pic', function() {
 
     //画像読み込み
     fileReader.readAsDataURL(file);
-  }*/
-  inputPicture('#update_climb_pic',name);
+  }
+  //inputPicture('#update_climb_pic',name);
 });
 
 var inputPicture = function(id,name) {
@@ -655,6 +654,7 @@ $(document).on('click', '#share_memo', function() {
   if (pic == '') {
     pic = null;
   }
+alert("msg:"+msg);
 
   var options = {
     message: msg, // not supported on some apps (Facebook, Instagram)
@@ -663,7 +663,7 @@ $(document).on('click', '#share_memo', function() {
     url: null,
     chooserTitle: null // Android only, you can override the default share sheet title
   };
-
+alert("aaa");
   window.plugins.socialsharing.shareWithOptions(options, onShareSuccess, onShareError);
 });
 
