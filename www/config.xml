@@ -46,23 +46,12 @@
 
     <!-- Core plugins -->
     <plugin name="cordova-plugin-battery-status" />
-    <!--
-        <plugin name="cordova-plugin-camera" />
-        <plugin name="cordova-plugin-media-capture" />
-        <plugin name="cordova-plugin-camera" source="npm" >
-          <variable name="CAMERA_USAGE_DESCRIPTION" value="Allow the app to use your camera" />
-          <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="the app to access your photos" />
-        </plugin>
-        <plugin name="cordova-plugin-media-capture" source="npm"  >
-          <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="Allow the app to access your photos" />
-        </plugin>
-    -->
     <plugin name="cordova-plugin-camera" source="npm" >
-      <variable name="CAMERA_USAGE_DESCRIPTION" value="メモに登録する写真を撮影するためにカメラを起動します" />
-      <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="メモに登録する写真を選択するためにカメラロールにアクセスします" />
+      <variable name="CAMERA_USAGE_DESCRIPTION" value="メモの写真を撮影するためカメラを起動します" />
     </plugin>
     <plugin name="cordova-plugin-media-capture" source="npm"  >
-      <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="Allow the app to access your photos" />
+      <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="メモの写真を選択するためカメラロールにアクセスします" />
+      <variable name="CAMERA_USAGE_DESCRIPTION" value="メモの写真を撮影するためカメラを起動します" />
     </plugin>
 
     <plugin name="cordova-plugin-console" />
