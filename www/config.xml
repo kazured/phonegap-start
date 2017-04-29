@@ -46,8 +46,25 @@
 
     <!-- Core plugins -->
     <plugin name="cordova-plugin-battery-status" />
-    <plugin name="cordova-plugin-camera" />
-    <plugin name="cordova-plugin-media-capture" />
+    <!--
+        <plugin name="cordova-plugin-camera" />
+        <plugin name="cordova-plugin-media-capture" />
+        <plugin name="cordova-plugin-camera" source="npm" >
+          <variable name="CAMERA_USAGE_DESCRIPTION" value="Allow the app to use your camera" />
+          <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="the app to access your photos" />
+        </plugin>
+        <plugin name="cordova-plugin-media-capture" source="npm"  >
+          <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="Allow the app to access your photos" />
+        </plugin>
+    -->
+    <plugin name="cordova-plugin-camera" source="npm" >
+      <variable name="CAMERA_USAGE_DESCRIPTION" value="メモに登録する写真を撮影するためにカメラを起動します" />
+      <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="メモに登録する写真を選択するためにカメラロールにアクセスします" />
+    </plugin>
+    <plugin name="cordova-plugin-media-capture" source="npm"  >
+      <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="Allow the app to access your photos" />
+    </plugin>
+
     <plugin name="cordova-plugin-console" />
     <plugin name="cordova-plugin-contacts" />
     <plugin name="cordova-plugin-device" />
@@ -69,8 +86,9 @@
     <!--
         <plugin name="com.phonegap.plugins.barcodescanner" />
     -->
+    <!-- for SQLite -->
     <plugin spec="https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free" source="git" />
-
+    <!-- for SNS share -->
     <gap:plugin name="cordova-plugin-x-socialsharing" source="npm" />
 
     <!-- Define app icon for each platform. -->
@@ -145,6 +163,16 @@
         <config-file parent="LSApplicationQueriesSchemes" target="*-Info.plist">
             <array>
                 <string>fb</string>
+            </array>
+        </config-file>
+        <config-file parent="CFBundleDevelopmentRegion" target="*-Info.plist">
+            <array>
+                <string>Japanese</string>
+            </array>
+        </config-file>
+        <config-file parent="CFBundleLocalizations" target="*-Info.plist">
+            <array>
+                <string>ja</string>
             </array>
         </config-file>
     </platform>
